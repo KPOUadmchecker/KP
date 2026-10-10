@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KPOU Checker core3</title>
+<title>Admission 簡易覆檢工具 v1.1.9</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
 :root{--bg:#0b1120;--card:#111827;--p:#22d3ee;--ok:#34d399;--bad:#f87171;--t:#e2e8f0;--d:#94a3b8}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"Noto Sans TC",sans-serif;background:var(--bg);color:var(--t);padding:12px}
+body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif;background:var(--bg);color:var(--t);padding:12px}
 body{background:radial-gradient(900px 420px at 80% -10%,rgba(34,211,238,.18),transparent 50%),linear-gradient(180deg,#07111f,#0b1120 40%);}
 .wrap{max-width:760px;margin:0 auto}
 header{text-align:center;margin-bottom:10px}
@@ -20,7 +19,7 @@ h1{font-size:1.28rem;letter-spacing:.4px}
 .tag{font-size:.66rem;color:#67e8f9;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.35);padding:2px 8px;border-radius:4px;letter-spacing:1px;font-family:ui-monospace,Menlo,monospace}
 .q{font-size:1.02rem;font-weight:600;margin:8px 0}
 .detail{font-size:.95rem;color:var(--d);background:#0f172a;padding:8px;border-radius:8px;margin-bottom:8px;line-height:1.5}
-.btn{display:block;width:100%;text-align:left;padding:12px 14px;margin:7px 0;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.22);border-radius:12px;color:var(--t);font-size:.92rem;position:relative;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.btn{display:block;width:100%;text-align:left;padding:14px 16px;margin:7px 0;min-height:48px;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.22);border-radius:12px;color:var(--t);font-size:.92rem;position:relative;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);cursor:pointer;font-family:inherit}
 
 .btn{overflow:hidden}
 .btn.mist{animation:mist .65s ease forwards;filter:blur(0)}
@@ -28,6 +27,7 @@ h1{font-size:1.28rem;letter-spacing:.4px}
 .q{animation:rise .35s ease}
 .btn{transition:transform .18s ease,border-color .18s ease,background .18s ease}
 .btn:active{transform:scale(.985)}
+.btn:focus-visible,.go:focus-visible,.back:focus-visible{outline:2px solid #67e8f9;outline-offset:2px}
 .tag{animation:rise .3s ease}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes shimmer{0%{background-position:0 0}100%{background-position:120px 0}}
@@ -38,9 +38,10 @@ h1{font-size:1.28rem;letter-spacing:.4px}
 .rh{text-align:center;margin-bottom:10px;padding:12px;border-radius:16px;border:1px solid rgba(148,163,184,.16);background:rgba(15,23,42,.55)}.rt{font-size:1.45rem;font-weight:700;letter-spacing:.3px}
 .KPOU .rt{color:var(--ok)}.KCH .rt{color:#22d3ee}.Refer .rt{color:var(--bad)}
 .rr{font-size:.82rem;color:var(--d);margin-top:4px}
-.svgbox{background:radial-gradient(circle at 50% 42%,rgba(34,211,238,.08),transparent 46%),#0b1220;border:1px solid rgba(148,163,184,.16);border-radius:16px;padding:8px;overflow-x:auto;margin:8px 0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}svg{width:100%;height:auto;display:block}
+.ts{font-size:.72rem;color:#64748b;margin-top:8px}
+.svgbox{background:radial-gradient(circle at 50% 42%,rgba(34,211,238,.08),transparent 46%),#0b1220;border:1px solid rgba(148,163,184,.16);border-radius:16px;padding:8px;overflow:hidden;touch-action:pan-y;overscroll-behavior-x:none;margin:8px 0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}svg{width:100%;height:auto;display:block;max-width:100%;pointer-events:none;-webkit-user-select:none;user-select:none}
 .n{fill:#1e293b;stroke:#475569}.n.on{fill:rgba(34,211,238,.22);stroke:#22d3ee}.n.win{fill:rgba(52,211,153,.3);stroke:#34d399}.n.bad{fill:rgba(248,113,113,.32);stroke:#f87171}.n.dim{fill:#111827;stroke:#334155;opacity:.5}
-.tx{fill:#94a3b8;font-size:10px;font-family:"Noto Sans TC",sans-serif}.tx.on{fill:#e0f2fe}.tx.win{fill:#d1fae5}.tx.bad{fill:#fecaca}.tx.dim{fill:#64748b}
+.tx{fill:#94a3b8;font-size:10px;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif}.tx.on{fill:#e0f2fe}.tx.win{fill:#d1fae5}.tx.bad{fill:#fecaca}.tx.dim{fill:#64748b}
 .a{stroke:#334155;stroke-width:1.3;fill:none;marker-end:url(#ah)}.a.on{stroke:#22d3ee;stroke-width:2.3}.a.win{stroke:#34d399;stroke-width:2.3}.a.bad{stroke:#f87171;stroke-width:2.3}
 .a.on,.a.win,.a.bad{stroke-dasharray:100;stroke-dashoffset:100;animation:draw 1.1s ease forwards}
 .n.on,.n.win,.n.bad{animation:pop .25s ease forwards}
@@ -54,13 +55,20 @@ h1{font-size:1.28rem;letter-spacing:.4px}
 .svgbox:after{content:"";position:absolute;left:8px;right:8px;height:2px;background:linear-gradient(90deg,transparent,#22d3ee,transparent);animation:scan 2.2s ease-in-out .2s;pointer-events:none}
 .n.win,.n.on,.n.bad{filter:drop-shadow(0 0 6px rgba(34,211,238,.35))}
 
-.path{background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:8px 10px;font-size:.76rem;color:var(--d);margin-bottom:8px}.path b{color:var(--p);display:block}
-.done{font-size:.76rem;color:#94a3b8;border:1px solid rgba(34,211,238,.22);border-radius:10px;padding:8px 10px;margin:0 0 8px;background:rgba(15,23,42,.45)}.done b{color:#e2e8f0;font-weight:650}.go{width:100%;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,#22d3ee,#0891b2);color:#fff;font-weight:700}
+.path{background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:10px 12px;font-size:.76rem;color:var(--d);margin-bottom:8px}.path b{color:var(--p);display:block;margin-bottom:6px}
+.path-steps{margin:0;padding:0;list-style:none}.path-steps li{margin:4px 0;line-height:1.45}.path-steps .pq{color:#94a3b8}.path-steps .pa{color:#e2e8f0;font-weight:600}.path-sum{margin-top:8px;padding-top:8px;border-top:1px solid #1e293b;color:#67e8f9}
+.done{font-size:.76rem;color:#94a3b8;border:1px solid rgba(34,211,238,.22);border-radius:10px;padding:8px 10px;margin:0 0 8px;background:rgba(15,23,42,.45)}.done b{color:#e2e8f0;font-weight:650}.go{width:100%;padding:14px;min-height:48px;border:0;border-radius:10px;background:linear-gradient(135deg,#22d3ee,#0891b2);color:#fff;font-weight:700;cursor:pointer;font-family:inherit;font-size:.95rem}
+.navrow{display:flex;gap:8px;margin-top:10px}
+.back{flex:0 0 auto;padding:12px 16px;min-height:48px;min-width:96px;border:1px solid rgba(148,163,184,.35);border-radius:10px;background:rgba(15,23,42,.7);color:var(--t);font-size:.9rem;cursor:pointer;font-family:inherit}
+.back[disabled],.back:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
+.actions{display:flex;flex-direction:column;gap:0}
+.svgcam{width:100%;transform:translate(0px,0px) scale(1);transform-origin:0 0;will-change:transform}
+.svgbox.zoomed{touch-action:none;-webkit-user-select:none;user-select:none}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header><div class="logo">KPOU admission checker</div><h1>Admission 簡易覆檢工具v1</h1></header>
+<header><div class="logo">KPOU admission checker</div><h1>Admission 簡易覆檢工具 v1.1.9</h1></header>
 <div class="warn"><span>僅供輔助使用，詳情請參照相關Guidelines及CL notes(如有）</span></div>
 <div class="bar"><div id="p"></div></div>
 <div class="card" id="app"></div>
@@ -74,6 +82,7 @@ h1{font-size:1.28rem;letter-spacing:.4px}
 5 新方格加節點，新線走外圍，不穿方格。可疊其他線。
 UI.nextDelay=650 選中化霧，其他只變淡。 */
 const UI = {nextDelay:455, boxStep:0.14, lineLag:0.07, lineDraw:0.77};
+const MAX_DEPTH = 4; /* 最深約 4 題（含起點）；進度條用此估算 */
 const QUESTIONS = [
   {q:"病人來源 Admission source？", o:[
     {l:"AED（QEH / UCH / TKO）", n:1, id:["aed"]},
@@ -125,8 +134,8 @@ const QUESTIONS = [
     {l:"KH 出院超過28日而且未於任何PSY FU門診就診 → 轉介相關醫院", r:"Refer", why:"KH 出院超過28日未 PSY FU → 轉介相關醫院", id:["fuo"]}
   ]},
   {q:"病人是否 FU KCH Child Psy SOPD/ CAMS ，或QEH Child Psy SOPD？", o:[
-    {l:"是 → 由 KCH 繼續護理", r:"KCH", why:"KWH + FU KCH CAMS → 由 KCH 繼續護理", id:["cams"]},
-    {l:"否 → KPOU", r:"KPOU", why:"KWH 非 FU KCH CAMS → KPOU", id:["camno"]}
+    {l:"是 → 由 KCH 繼續護理", r:"KCH", why:"FU KCH Child Psy SOPD/CAMS 或 QEH Child Psy SOPD → 由 KCH 繼續護理", id:["cams"]},
+    {l:"否 → KPOU", r:"KPOU", why:"非 FU KCH Child Psy SOPD/CAMS / QEH Child Psy → KPOU", id:["camno"]}
   ]},
   {q:"F12 / CD form location 是否 KPOU？", o:[
     {l:"是 → KPOU", r:"KPOU", why:"F12 / CD form location 是 KPOU → KPOU", id:["f12y"]},
@@ -151,7 +160,7 @@ const EDGES = [
   {d:"M308 293 L332 288", from:"f12y", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"f12y"), win:true},
   {d:"M148 312 L8 312 L8 740 L800 740 L800 474 L770 474", from:"f12n", to:"result", on:(s,r)=>r==="Refer"&&has(s,"f12n"), bad:true},
   {d:"M72 337 L84 336", from:"slpc", to:"slpcok", on:s=>has(s,"slpc")&&!has(s,"slpcno")},
-  {d:"M16 337 L4 337 L4 648 L635 648 L635 500", from:"slpcno", to:"result", on:(s,r)=>r==="Refer"&&has(s,"slpcno"), bad:true},
+  {d:"M16 337 L4 337 L4 710 L800 710 L800 474 L770 474", from:"slpcno", to:"result", on:(s,r)=>r==="Refer"&&has(s,"slpcno"), bad:true},
   {d:"M234 335 L342 300", from:"slpcok", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"slpcok"), win:true},
   {d:"M146 392 L160 376", from:"oa", to:"oaw", on:s=>has(s,"oa")&&has(s,"oaw")},
   {d:"M146 408 L160 404", from:"oa", to:"oan", on:s=>has(s,"oa")&&has(s,"oan")},
@@ -160,7 +169,7 @@ const EDGES = [
   {d:"M356 348 L356 330 L400 322", from:"lastfu", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"lastfu"), win:true},
   {d:"M444 410 L500 474", from:"fuo", to:"result", on:(s,r)=>r==="Refer"&&has(s,"fuo"), bad:true},
   {d:"M248 404 L248 438 L490 438 L490 474 L500 474", from:"oan", to:"result", on:(s,r)=>r==="Refer"&&has(s,"oan"), bad:true},
-  {d:"M16 202 L4 202 L4 660 L635 660 L635 580", from:"kch", to:"result", on:(s,r)=>r==="KCH"&&has(s,"kch")},
+  {d:"M16 202 L4 202 L4 710 L635 710 L635 580", from:"kch", to:"result", on:(s,r)=>r==="KCH"&&has(s,"kch")},
   {d:"M330 504 L330 620 L800 620 L800 280 L488 280", from:"hbot", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"hbot"), win:true},
   {d:"M146 452 L162 504", from:"ipo", to:"hbot", on:s=>has(s,"ipo")&&has(s,"hbot")},
   {d:"M16 452 L8 452 L8 552 L162 552", from:"ipo", to:"kwh", on:s=>has(s,"ipo")&&has(s,"kwh")},
@@ -172,28 +181,50 @@ const EDGES = [
   {d:"M16 460 L8 460 L8 600 L162 600", from:"ipo", to:"hkch", on:s=>has(s,"ipo")&&has(s,"hkch")},
   {d:"M330 600 L410 600 L410 576", from:"hkch", to:"cams", on:s=>has(s,"hkch")&&(has(s,"cams")||has(s,"camno"))}
 ];
-let cur=0, log=[], lit=new Set(), trail=[], pathIds=[];
+let cur=0, log=[], lit=new Set(), trail=[], pathIds=[], history=[], picking=false;
+function progressWidth(){
+  return (8 + Math.min(trail.length, MAX_DEPTH) / MAX_DEPTH * 85) + "%";
+}
+function snapState(){
+  return {cur, log:[...log], lit:new Set(lit), trail:trail.map(t=>({q:t.q,a:t.a})), pathIds:[...pathIds]};
+}
+function restoreState(s){
+  cur=s.cur; log=s.log; lit=s.lit; trail=s.trail; pathIds=s.pathIds;
+}
+function goBack(){
+  if(picking || !history.length) return;
+  restoreState(history.pop());
+  document.getElementById("p").style.width=progressWidth();
+  render();
+}
 function render(){
-  document.getElementById("p").style.width=(8+trail.length/6*90)+"%";
+  document.getElementById("p").style.width=progressWidth();
   const q=QUESTIONS[cur];
   let h=trail.map((s,i)=>`<div class="done"><span class="tag">0${i+1}</span> ${s.q}<b>${s.a}</b></div>`).join("");
   h+=`<span class="tag">STEP ${String(trail.length+1).padStart(2,"0")}</span><div class="q">${q.q}</div>`;
   if(q.d) h+=`<div class="detail">${q.d.replace(/\n/g,"<br>")}</div>`;
-  q.o.forEach((o,i)=>h+=`<button class="btn" onclick="pick(${i})">${o.l}</button>`);
+  q.o.forEach((o,i)=>h+=`<button type="button" class="btn" onclick="pick(${i})">${o.l}</button>`);
+  const canBack=history.length>0;
+  h+=`<div class="navrow"><button type="button" class="back" onclick="goBack()" ${canBack?"":"disabled"} aria-label="上一步">上一步</button></div>`;
   document.getElementById("app").innerHTML=h;
   const box=document.getElementById("app");
   box.lastElementChild && box.lastElementChild.scrollIntoView({block:"nearest",behavior:"smooth"});
 }
 function pick(i){
+  if(picking) return;
+  picking=true;
+  history.push(snapState());
   const o=QUESTIONS[cur].o[i];
   document.querySelectorAll(".btn").forEach((b,idx)=>{
     if(idx===i){b.classList.add("on"); b.classList.add("mist");}
     else {b.style.opacity=".35"; b.style.pointerEvents="none";}
   });
+  const backBtn=document.querySelector(".back");
+  if(backBtn){backBtn.disabled=true; backBtn.style.pointerEvents="none";}
   const ans=o.l.split("→")[0].trim();
   log.push(ans);
   (o.id||[]).forEach(x=>{lit.add(x); pathIds.push(x);});
-  setTimeout(()=>{ if(o.r) finish(o.r,o.why); else {trail.push({q:QUESTIONS[cur].q,a:ans}); cur=o.n; render();} },UI.nextDelay);
+  setTimeout(()=>{ picking=false; if(o.r) finish(o.r,o.why); else {trail.push({q:QUESTIONS[cur].q,a:ans}); cur=o.n; render();} },UI.nextDelay);
 }
 function cls(id){ return lit.has(id)?"on":""; }
 function finish(type, why){
@@ -211,9 +242,19 @@ function finish(type, why){
     const c=e.bad?"bad":e.win?"win":"on";
     return `<path class="a ${c}" data-i="${i}" pathLength="100" d="${e.d}"/>`;
   }).join("");
+  const now=new Date();
+  const ts=now.toLocaleString("zh-HK",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+  let pathHtml='<ul class="path-steps">';
+  trail.forEach((s,i)=>{
+    pathHtml+=`<li><span class="pq">${i+1}. ${s.q}</span><br><span class="pa">→ ${s.a}</span></li>`;
+  });
+  const lastQ=QUESTIONS[cur].q;
+  const lastA=log[log.length-1]||"";
+  pathHtml+=`<li><span class="pq">${trail.length+1}. ${lastQ}</span><br><span class="pa">→ ${lastA}</span></li>`;
+  pathHtml+=`</ul><div class="path-sum">結果：${title}</div>`;
   document.getElementById("app").innerHTML=`
-  <div class="rh ${type}"><div class="tag">RESULT</div><div style="font-size:1.8rem;margin-top:6px">${icon}</div><div class="rt">${title}</div><div class="rr">${why}</div></div>
-  <div class="svgbox"><svg viewBox="0 0 840 780" xmlns="http://www.w3.org/2000/svg">
+  <div class="rh ${type}"><div class="tag">RESULT</div><div style="font-size:1.8rem;margin-top:6px">${icon}</div><div class="rt">${title}</div><div class="ts">${ts}</div></div>
+  <div class="svgbox"><div class="svgcam" id="svgcam"><svg viewBox="0 0 840 780" xmlns="http://www.w3.org/2000/svg">
     <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748b"/></marker></defs>
     <ellipse class="n end ${kpou}" cx="410" cy="280" rx="78" ry="48"/>
     <text class="tx endlabel ${kpou}" x="410" y="286" text-anchor="middle" font-size="18" font-weight="700">KPOU</text>
@@ -271,10 +312,32 @@ function finish(type, why){
     <text class="tx endlabel ${kch}" x="635" y="548" text-anchor="middle" font-size="13">由 KCH 繼續護理</text>
     <text class="tx endlabel ${kch}" x="635" y="566" text-anchor="middle" font-size="11">If the QEH in-pt who FU KCH</text>
     ${edges}
-  </svg></div>
-  <div class="path"><b>決策路徑</b>${log.join(" → ")}</div>
-  <button class="go" onclick="reset()">重新檢查另一個案</button>`;
+  </svg></div></div>
+  <div class="path"><b>決策路徑</b>${pathHtml}</div>
+  <div class="actions">
+    <button type="button" class="go" onclick="reset()">重新檢查另一個案</button>
+  </div>`;
   const app=document.getElementById("app");
+  mapScale=1; mapTX=0; mapTY=0; mapZoomReady=false; pinch=null; pan=null;
+  /* 動畫期間鎖定：touch-action pan-y（可捲頁），忽略雙指縮放 */
+  const svgbox=app.querySelector(".svgbox");
+  if(svgbox){
+    svgbox.classList.remove("zoomed");
+    svgbox.style.overflow="hidden";
+    svgbox.style.touchAction="pan-y";
+    svgbox.style.overscrollBehaviorX="none";
+    svgbox.scrollLeft=0;
+    svgbox.scrollTop=0;
+    const svg=svgbox.querySelector("svg");
+    if(svg){svg.style.width="100%";svg.style.height="auto";svg.style.maxWidth="100%";svg.style.pointerEvents="none";}
+    bindMapGestures(svgbox);
+  }
+  applyMapTransform();
+  /* 結果注入後立刻把樹捲入視窗中央，再開始路徑動畫 */
+  if(svgbox){
+    const beh=(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)?"auto":"smooth";
+    svgbox.scrollIntoView({block:"center",behavior:beh});
+  }
   /* 全路線同一規則：入線抵達才亮格，格亮後才出下一條非結果線；結果線一定等所有路徑格亮完。 */
   const ids=[...new Set(pathIds)];
   const scale=ids.length>3?3/ids.length:1;
@@ -313,8 +376,150 @@ function finish(type, why){
   const arriveAt=Math.max(0, ...edgeAt.filter(x=>x!=null), 0)+lineDraw;
   app.querySelectorAll(".end.win,.end.on,.end.bad,.endlabel.win,.endlabel.on,.endlabel.bad").forEach(el=>{el.style.opacity=".3"; el.style.animation="arrive .35s ease forwards"; el.style.animationDelay=arriveAt+"s";});
   app.querySelectorAll(".end.win,.end.on,.end.bad").forEach(el=>{el.style.animation="arrive .35s ease "+arriveAt+"s forwards, glow 1.1s ease-in-out "+(arriveAt+0.3)+"s infinite";});
+  /* 動畫完成（arriveAt + ~0.4s buffer）後才解鎖雙指 pinch-zoom */
+  scheduleMapZoomUnlock(arriveAt);
 }
-function reset(){cur=0; log=[]; lit=new Set(); trail=[]; pathIds=[]; document.getElementById("p").style.width="8%"; render();}
+let mapScale=1, mapTX=0, mapTY=0, mapZoomReady=false;
+let pinch=null, pan=null, lastTap=0;
+const MAP_SCALE_MIN=1, MAP_SCALE_MAX=2.5;
+const MAP_UNLOCK_BUFFER=0.4; /* seconds after arriveAt */
+function applyMapTransform(){
+  const cam=document.getElementById("svgcam");
+  const box=document.querySelector(".svgbox");
+  if(mapScale<MAP_SCALE_MIN) mapScale=MAP_SCALE_MIN;
+  if(mapScale>MAP_SCALE_MAX) mapScale=MAP_SCALE_MAX;
+  if(mapScale<=1){ mapScale=1; mapTX=0; mapTY=0; }
+  if(cam){
+    cam.style.transformOrigin="0 0";
+    cam.style.width="100%";
+    cam.style.transform=`translate(${mapTX}px,${mapTY}px) scale(${mapScale})`;
+  }
+  if(box){
+    box.style.overflow="hidden";
+    box.style.overscrollBehaviorX="none";
+    if(mapZoomReady && mapScale>1){
+      box.style.touchAction="none";
+      box.classList.add("zoomed");
+    } else {
+      box.style.touchAction="pan-y";
+      box.classList.remove("zoomed");
+    }
+  }
+}
+function clampPan(){
+  const box=document.querySelector(".svgbox");
+  if(!box || mapScale<=1){ mapTX=0; mapTY=0; return; }
+  const w=box.clientWidth, h=box.clientHeight;
+  const minX=w*(1-mapScale), minY=h*(1-mapScale);
+  mapTX=Math.min(0, Math.max(minX, mapTX));
+  mapTY=Math.min(0, Math.max(minY, mapTY));
+}
+function setMapZoomEnabled(on){
+  mapZoomReady=!!on;
+  if(!on){ pinch=null; pan=null; }
+  applyMapTransform();
+}
+function scheduleMapZoomUnlock(arriveAt){
+  setMapZoomEnabled(false);
+  const ms=Math.max(0, ((arriveAt||0)+MAP_UNLOCK_BUFFER)*1000);
+  setTimeout(()=>setMapZoomEnabled(true), ms);
+}
+function resetMapView(){
+  mapScale=1; mapTX=0; mapTY=0;
+  pinch=null; pan=null;
+  applyMapTransform();
+}
+function bindMapGestures(box){
+  if(!box || box.dataset.gesturesBound==="1") return;
+  box.dataset.gesturesBound="1";
+  box.addEventListener("touchstart", onMapTouchStart, {passive:false});
+  box.addEventListener("touchmove", onMapTouchMove, {passive:false});
+  box.addEventListener("touchend", onMapTouchEnd, {passive:false});
+  box.addEventListener("touchcancel", onMapTouchEnd, {passive:false});
+}
+function onMapTouchStart(e){
+  const box=e.currentTarget;
+  const br=box.getBoundingClientRect();
+  /* 動畫鎖定：允單指捲頁；雙指縮放忽略並擋瀏覽器頁面 pinch */
+  if(!mapZoomReady){
+    if(e.touches.length>=2) e.preventDefault();
+    pinch=null; pan=null;
+    return;
+  }
+  if(e.touches.length===2){
+    pan=null;
+    const t0=e.touches[0], t1=e.touches[1];
+    const d=Math.hypot(t0.clientX-t1.clientX, t0.clientY-t1.clientY)||1;
+    const mx=(t0.clientX+t1.clientX)/2-br.left;
+    const my=(t0.clientY+t1.clientY)/2-br.top;
+    pinch={d0:d, s0:mapScale, tx0:mapTX, ty0:mapTY, mx0:mx, my0:my};
+    e.preventDefault();
+    return;
+  }
+  if(e.touches.length===1){
+    const now=Date.now();
+    if(now-lastTap<280){
+      resetMapView();
+      lastTap=0;
+      e.preventDefault();
+      return;
+    }
+    lastTap=now;
+    if(mapScale>1){
+      pan={x0:e.touches[0].clientX, y0:e.touches[0].clientY, tx0:mapTX, ty0:mapTY};
+      e.preventDefault(); /* 放大後單指拖圖，擋頁面捲動 */
+    } else {
+      pan=null; /* scale===1：唔 preventDefault，touch-action pan-y 可捲頁 */
+    }
+  }
+}
+function onMapTouchMove(e){
+  if(!mapZoomReady){
+    if(e.touches.length>=2) e.preventDefault();
+    return;
+  }
+  const box=e.currentTarget;
+  const br=box.getBoundingClientRect();
+  if(e.touches.length===2){
+    const t0=e.touches[0], t1=e.touches[1];
+    if(!pinch){
+      const d=Math.hypot(t0.clientX-t1.clientX, t0.clientY-t1.clientY)||1;
+      const mx=(t0.clientX+t1.clientX)/2-br.left;
+      const my=(t0.clientY+t1.clientY)/2-br.top;
+      pinch={d0:d, s0:mapScale, tx0:mapTX, ty0:mapTY, mx0:mx, my0:my};
+    }
+    const d=Math.hypot(t0.clientX-t1.clientX, t0.clientY-t1.clientY)||1;
+    const mx=(t0.clientX+t1.clientX)/2-br.left;
+    const my=(t0.clientY+t1.clientY)/2-br.top;
+    let ns=pinch.s0*(d/pinch.d0);
+    ns=Math.min(MAP_SCALE_MAX, Math.max(MAP_SCALE_MIN, ns));
+    const cx=(pinch.mx0-pinch.tx0)/pinch.s0;
+    const cy=(pinch.my0-pinch.ty0)/pinch.s0;
+    mapScale=ns;
+    mapTX=mx-cx*ns;
+    mapTY=my-cy*ns;
+    if(mapScale>1) clampPan();
+    applyMapTransform();
+    e.preventDefault();
+    return;
+  }
+  if(e.touches.length===1 && pan && mapScale>1){
+    mapTX=pan.tx0+(e.touches[0].clientX-pan.x0);
+    mapTY=pan.ty0+(e.touches[0].clientY-pan.y0);
+    clampPan();
+    applyMapTransform();
+    e.preventDefault();
+  }
+}
+function onMapTouchEnd(e){
+  if(e.touches.length<2) pinch=null;
+  if(e.touches.length===0){ pan=null; }
+  else if(e.touches.length===1 && mapZoomReady && mapScale>1){
+    pan={x0:e.touches[0].clientX, y0:e.touches[0].clientY, tx0:mapTX, ty0:mapTY};
+  }
+  if(mapScale<=1) applyMapTransform();
+}
+function reset(){cur=0; log=[]; lit=new Set(); trail=[]; pathIds=[]; history=[]; picking=false; mapScale=1; mapTX=0; mapTY=0; mapZoomReady=false; pinch=null; pan=null; document.getElementById("p").style.width="8%"; render();}
 function validate(){
   QUESTIONS.forEach((q,qi)=>q.o.forEach(o=>{
     if(o.n!=null && !QUESTIONS[o.n]) console.error("跳題編號不存在", qi, o.l, o.n);
