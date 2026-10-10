@@ -55,7 +55,7 @@ h1{font-size:1.28rem;letter-spacing:.4px}
 .n.win,.n.on,.n.bad{filter:drop-shadow(0 0 6px rgba(34,211,238,.35))}
 
 .path{background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:8px 10px;font-size:.76rem;color:var(--d);margin-bottom:8px}.path b{color:var(--p);display:block}
-.go{width:100%;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,#22d3ee,#0891b2);color:#fff;font-weight:700}
+.done{font-size:.76rem;color:#94a3b8;border:1px solid rgba(34,211,238,.22);border-radius:10px;padding:8px 10px;margin:0 0 8px;background:rgba(15,23,42,.45)}.done b{color:#e2e8f0;font-weight:650}.go{width:100%;padding:12px;border:0;border-radius:10px;background:linear-gradient(135deg,#22d3ee,#0891b2);color:#fff;font-weight:700}
 </style>
 </head>
 <body>
@@ -73,7 +73,7 @@ h1{font-size:1.28rem;letter-spacing:.4px}
 4 終點在引線抵達前保持暗。文字只標 endlabel。
 5 新方格加節點，新線走外圍，不穿方格。可疊其他線。
 UI.nextDelay=650 選中化霧，其他只變淡。 */
-const UI = {nextDelay:650, boxStep:0.2, lineLag:0.1, lineDraw:1.1};
+const UI = {nextDelay:455, boxStep:0.14, lineLag:0.07, lineDraw:0.77};
 const QUESTIONS = [
   {q:"病人來源 Admission source？", o:[
     {l:"AED（QEH / UCH / TKO）", n:1, id:["aed"]},
@@ -135,51 +135,54 @@ const QUESTIONS = [
 ];
 const has = (set, id) => set.has(id);
 const EDGES = [
-  {d:"M132 32 L148 24", on:s=>has(s,"aed")&&has(s,"wid")},
-  {d:"M132 44 L148 54", on:s=>has(s,"aed")&&has(s,"noid")},
-  {d:"M236 24 L252 20", on:s=>has(s,"wid")&&has(s,"known")},
-  {d:"M236 24 L252 54", on:s=>has(s,"wid")&&has(s,"newm")},
-  {d:"M358 20 L374 28", on:s=>has(s,"known")},
-  {d:"M532 36 L550 36", on:s=>has(s,"kfail")||has(s,"other"), bad:true},
-  {d:"M454 66 L454 150 L440 238", on:(s,r)=>r==="KPOU"&&has(s,"kcond"), win:true},
-  {d:"M306 66 L340 140 L380 238", on:(s,r)=>r==="KPOU"&&has(s,"newm"), win:true},
-  {d:"M193 66 L193 150 L350 238", on:(s,r)=>r==="KPOU"&&has(s,"noid"), win:true},
-  {d:"M760 66 L760 448", on:(s,r)=>r==="Refer"&&(has(s,"kfail")||has(s,"other")), bad:true},
-  {d:"M184 172 L342 265", on:(s,r)=>r==="KPOU"&&has(s,"iptop"), win:true},
-  {d:"M166 255 L342 275", on:(s,r)=>r==="KPOU"&&has(s,"psy"), win:true},
-  {d:"M136 293 L148 293", on:s=>has(s,"f12")&&(has(s,"f12y")||has(s,"f12n"))},
-  {d:"M308 293 L332 288", on:(s,r)=>r==="KPOU"&&has(s,"f12y"), win:true},
-  {d:"M148 312 L8 312 L8 740 L800 740 L800 474 L770 474", on:(s,r)=>r==="Refer"&&has(s,"f12n"), bad:true},
-  {d:"M72 337 L84 336", on:s=>has(s,"slpc")&&!has(s,"slpcno")},
-  {d:"M16 337 L4 337 L4 648 L635 648 L635 500", on:(s,r)=>r==="Refer"&&has(s,"slpcno"), bad:true},
-  {d:"M234 335 L342 300", on:(s,r)=>r==="KPOU"&&has(s,"slpcok"), win:true},
-  {d:"M146 392 L160 376", on:s=>has(s,"oa")&&has(s,"oaw")},
-  {d:"M146 408 L160 404", on:s=>has(s,"oa")&&has(s,"oan")},
-  {d:"M248 372 L266 366", on:s=>has(s,"lastfu")},
-  {d:"M248 392 L266 408", on:s=>has(s,"fuo")},
-  {d:"M356 348 L356 330 L400 322", on:(s,r)=>r==="KPOU"&&has(s,"lastfu"), win:true},
-  {d:"M444 410 L500 474", on:(s,r)=>r==="Refer"&&has(s,"fuo"), bad:true},
-  {d:"M248 404 L248 438 L490 438 L490 474 L500 474", on:(s,r)=>r==="Refer"&&has(s,"oan"), bad:true},
-  {d:"M16 202 L4 202 L4 660 L635 660 L635 580", on:(s,r)=>r==="KCH"&&has(s,"kch")},
-  {d:"M330 504 L330 620 L800 620 L800 280 L488 280", on:(s,r)=>r==="KPOU"&&has(s,"hbot"), win:true},
-  {d:"M146 452 L162 504", on:s=>has(s,"ipo")&&has(s,"hbot")},
-  {d:"M16 452 L8 452 L8 552 L162 552", on:s=>has(s,"ipo")&&has(s,"kwh")},
-  {d:"M330 552 L340 552", on:s=>has(s,"kwh")&&(has(s,"cams")||has(s,"camno"))},
-  {d:"M480 552 L490 552 L490 740 L800 740 L800 280 L488 280", on:(s,r)=>r==="KPOU"&&has(s,"camno"), win:true},
-  {d:"M480 552 L500 554", on:(s,r)=>r==="KCH"&&has(s,"cams")},
-  {d:"M16 468 L4 468 L4 648 L162 648", on:s=>has(s,"ipo")&&has(s,"othip")},
-  {d:"M330 648 L348 648 L348 720 L790 720 L790 474 L770 474", on:(s,r)=>r==="Refer"&&has(s,"othip"), bad:true},
-  {d:"M16 460 L8 460 L8 600 L162 600", on:s=>has(s,"ipo")&&has(s,"hkch")},
-  {d:"M330 600 L410 600 L410 576", on:s=>has(s,"hkch")&&(has(s,"cams")||has(s,"camno"))}
+  {d:"M132 32 L148 24", from:"aed", to:"wid", on:s=>has(s,"aed")&&has(s,"wid")},
+  {d:"M132 44 L148 54", from:"aed", to:"noid", on:s=>has(s,"aed")&&has(s,"noid")},
+  {d:"M236 24 L252 20", from:"wid", to:"known", on:s=>has(s,"wid")&&has(s,"known")},
+  {d:"M236 24 L252 54", from:"wid", to:"newm", on:s=>has(s,"wid")&&has(s,"newm")},
+  {d:"M358 20 L374 28", from:"known", to:"kcond", on:s=>has(s,"known")},
+  {d:"M532 36 L550 36", from:"kfail", to:"other", on:s=>has(s,"kfail")||has(s,"other"), bad:true},
+  {d:"M454 66 L454 150 L440 238", from:"kcond", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"kcond"), win:true},
+  {d:"M306 66 L340 140 L380 238", from:"newm", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"newm"), win:true},
+  {d:"M193 66 L193 150 L350 238", from:"noid", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"noid"), win:true},
+  {d:"M760 66 L760 448", from:"kfail", to:"result", on:(s,r)=>r==="Refer"&&(has(s,"kfail")||has(s,"other")), bad:true},
+  {d:"M184 172 L342 265", from:"iptop", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"iptop"), win:true},
+  {d:"M166 255 L342 275", from:"psy", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"psy"), win:true},
+  {d:"M136 293 L148 293", from:"f12", to:"f12y", on:s=>has(s,"f12")&&(has(s,"f12y")||has(s,"f12n"))},
+  {d:"M308 293 L332 288", from:"f12y", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"f12y"), win:true},
+  {d:"M148 312 L8 312 L8 740 L800 740 L800 474 L770 474", from:"f12n", to:"result", on:(s,r)=>r==="Refer"&&has(s,"f12n"), bad:true},
+  {d:"M72 337 L84 336", from:"slpc", to:"slpcok", on:s=>has(s,"slpc")&&!has(s,"slpcno")},
+  {d:"M16 337 L4 337 L4 648 L635 648 L635 500", from:"slpcno", to:"result", on:(s,r)=>r==="Refer"&&has(s,"slpcno"), bad:true},
+  {d:"M234 335 L342 300", from:"slpcok", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"slpcok"), win:true},
+  {d:"M146 392 L160 376", from:"oa", to:"oaw", on:s=>has(s,"oa")&&has(s,"oaw")},
+  {d:"M146 408 L160 404", from:"oa", to:"oan", on:s=>has(s,"oa")&&has(s,"oan")},
+  {d:"M248 372 L266 366", from:"oaw", to:"lastfu", on:s=>has(s,"lastfu")},
+  {d:"M248 392 L266 408", from:"oaw", to:"fuo", on:s=>has(s,"fuo")},
+  {d:"M356 348 L356 330 L400 322", from:"lastfu", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"lastfu"), win:true},
+  {d:"M444 410 L500 474", from:"fuo", to:"result", on:(s,r)=>r==="Refer"&&has(s,"fuo"), bad:true},
+  {d:"M248 404 L248 438 L490 438 L490 474 L500 474", from:"oan", to:"result", on:(s,r)=>r==="Refer"&&has(s,"oan"), bad:true},
+  {d:"M16 202 L4 202 L4 660 L635 660 L635 580", from:"kch", to:"result", on:(s,r)=>r==="KCH"&&has(s,"kch")},
+  {d:"M330 504 L330 620 L800 620 L800 280 L488 280", from:"hbot", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"hbot"), win:true},
+  {d:"M146 452 L162 504", from:"ipo", to:"hbot", on:s=>has(s,"ipo")&&has(s,"hbot")},
+  {d:"M16 452 L8 452 L8 552 L162 552", from:"ipo", to:"kwh", on:s=>has(s,"ipo")&&has(s,"kwh")},
+  {d:"M330 552 L340 552", from:"kwh", to:"cams", on:s=>has(s,"kwh")&&(has(s,"cams")||has(s,"camno"))},
+  {d:"M480 552 L490 552 L490 740 L800 740 L800 280 L488 280", from:"camno", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"camno"), win:true},
+  {d:"M480 552 L500 554", from:"cams", to:"result", on:(s,r)=>r==="KCH"&&has(s,"cams")},
+  {d:"M16 468 L4 468 L4 648 L162 648", from:"ipo", to:"othip", on:s=>has(s,"ipo")&&has(s,"othip")},
+  {d:"M330 648 L348 648 L348 720 L790 720 L790 474 L770 474", from:"othip", to:"result", on:(s,r)=>r==="Refer"&&has(s,"othip"), bad:true},
+  {d:"M16 460 L8 460 L8 600 L162 600", from:"ipo", to:"hkch", on:s=>has(s,"ipo")&&has(s,"hkch")},
+  {d:"M330 600 L410 600 L410 576", from:"hkch", to:"cams", on:s=>has(s,"hkch")&&(has(s,"cams")||has(s,"camno"))}
 ];
-let cur=0, log=[], lit=new Set();
+let cur=0, log=[], lit=new Set(), trail=[], pathIds=[];
 function render(){
-  document.getElementById("p").style.width=(8+cur/7*90)+"%";
+  document.getElementById("p").style.width=(8+trail.length/6*90)+"%";
   const q=QUESTIONS[cur];
-  let h=`<span class="tag">STEP ${String(cur+1).padStart(2,"0")}</span><div class="q">${q.q}</div>`;
+  let h=trail.map((s,i)=>`<div class="done"><span class="tag">0${i+1}</span> ${s.q}<b>${s.a}</b></div>`).join("");
+  h+=`<span class="tag">STEP ${String(trail.length+1).padStart(2,"0")}</span><div class="q">${q.q}</div>`;
   if(q.d) h+=`<div class="detail">${q.d.replace(/\n/g,"<br>")}</div>`;
   q.o.forEach((o,i)=>h+=`<button class="btn" onclick="pick(${i})">${o.l}</button>`);
   document.getElementById("app").innerHTML=h;
+  const box=document.getElementById("app");
+  box.lastElementChild && box.lastElementChild.scrollIntoView({block:"nearest",behavior:"smooth"});
 }
 function pick(i){
   const o=QUESTIONS[cur].o[i];
@@ -187,9 +190,10 @@ function pick(i){
     if(idx===i){b.classList.add("on"); b.classList.add("mist");}
     else {b.style.opacity=".35"; b.style.pointerEvents="none";}
   });
-  log.push(o.l.split("→")[0].trim());
-  (o.id||[]).forEach(x=>lit.add(x));
-  setTimeout(()=>{ if(o.r) finish(o.r,o.why); else {cur=o.n; render();} },UI.nextDelay);
+  const ans=o.l.split("→")[0].trim();
+  log.push(ans);
+  (o.id||[]).forEach(x=>{lit.add(x); pathIds.push(x);});
+  setTimeout(()=>{ if(o.r) finish(o.r,o.why); else {trail.push({q:QUESTIONS[cur].q,a:ans}); cur=o.n; render();} },UI.nextDelay);
 }
 function cls(id){ return lit.has(id)?"on":""; }
 function finish(type, why){
@@ -201,11 +205,11 @@ function finish(type, why){
   const kch=type==="KCH"?"on":"dim";
   const top=type==="KPOU"&&lit.has("iptop")?"win":"";
   const bot=type==="KCH"&&lit.has("kch")?"on":"";
-  const edges=EDGES.map(e=>{
+  const edges=EDGES.map((e,i)=>{
     const on=e.on(lit,type);
     if(!on) return `<path class="a" pathLength="100" d="${e.d}" style="opacity:.18;marker-end:none"/>`;
     const c=e.bad?"bad":e.win?"win":"on";
-    return `<path class="a ${c}" pathLength="100" d="${e.d}"/>`;
+    return `<path class="a ${c}" data-i="${i}" pathLength="100" d="${e.d}"/>`;
   }).join("");
   document.getElementById("app").innerHTML=`
   <div class="rh ${type}"><div class="tag">RESULT</div><div style="font-size:1.8rem;margin-top:6px">${icon}</div><div class="rt">${title}</div><div class="rr">${why}</div></div>
@@ -213,17 +217,17 @@ function finish(type, why){
     <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748b"/></marker></defs>
     <ellipse class="n end ${kpou}" cx="410" cy="280" rx="78" ry="48"/>
     <text class="tx endlabel ${kpou}" x="410" y="286" text-anchor="middle" font-size="18" font-weight="700">KPOU</text>
-    <rect class="n ${cls('aed')}" x="16" y="18" width="116" height="40" rx="4"/><text class="tx ${cls('aed')}" x="74" y="36" text-anchor="middle">AED</text><text class="tx ${cls('aed')}" x="74" y="48" text-anchor="middle" font-size="9">(QEH/UCH/TKO)</text>
-    <rect class="n ${cls('wid')}" x="150" y="12" width="86" height="24" rx="4"/><text class="tx ${cls('wid')}" x="193" y="28" text-anchor="middle">With I.D.</text>
-    <rect class="n ${cls('noid')}" x="150" y="42" width="86" height="24" rx="4"/><text class="tx ${cls('noid')}" x="193" y="58" text-anchor="middle">Without I.D. (UID)</text>
-    <rect class="n ${cls('known')}" x="254" y="8" width="104" height="24" rx="4"/><text class="tx ${cls('known')}" x="306" y="24" text-anchor="middle">Known to MHS</text>
-    <rect class="n ${cls('newm')}" x="254" y="42" width="104" height="24" rx="4"/><text class="tx ${cls('newm')}" x="306" y="58" text-anchor="middle">New to MHS</text>
-    <rect class="n ${cls('kcond')||cls('kfail')}" x="376" y="8" width="156" height="58" rx="4"/>
+    <rect class="n ${cls('aed')}" data-id="aed" x="16" y="18" width="116" height="40" rx="4"/><text class="tx ${cls('aed')}" x="74" y="36" text-anchor="middle">AED</text><text class="tx ${cls('aed')}" x="74" y="48" text-anchor="middle" font-size="9">(QEH/UCH/TKO)</text>
+    <rect class="n ${cls('wid')}" data-id="wid" x="150" y="12" width="86" height="24" rx="4"/><text class="tx ${cls('wid')}" x="193" y="28" text-anchor="middle">With I.D.</text>
+    <rect class="n ${cls('noid')}" data-id="noid" x="150" y="42" width="86" height="24" rx="4"/><text class="tx ${cls('noid')}" x="193" y="58" text-anchor="middle">Without I.D. (UID)</text>
+    <rect class="n ${cls('known')}" data-id="known" x="254" y="8" width="104" height="24" rx="4"/><text class="tx ${cls('known')}" x="306" y="24" text-anchor="middle">Known to MHS</text>
+    <rect class="n ${cls('newm')}" data-id="newm" x="254" y="42" width="104" height="24" rx="4"/><text class="tx ${cls('newm')}" x="306" y="58" text-anchor="middle">New to MHS</text>
+    <rect class="n ${cls('kcond')||cls('kfail')}" data-id="kcond kfail" x="376" y="8" width="156" height="58" rx="4"/>
     <text class="tx ${cls('kcond')||cls('kfail')}" x="454" y="24" text-anchor="middle" font-size="9">1. FU OPD ≤12m</text>
     <text class="tx ${cls('kcond')||cls('kfail')}" x="454" y="36" text-anchor="middle" font-size="9">2. Gazette DC ≤28d 未FU</text>
     <text class="tx ${cls('kcond')||cls('kfail')}" x="454" y="48" text-anchor="middle" font-size="9">3. Default >1 year</text>
     
-    <rect class="n ${cls('other')}" x="552" y="8" width="200" height="58" rx="4"/>
+    <rect class="n ${cls('other')}" data-id="other" x="552" y="8" width="200" height="58" rx="4"/>
     <text class="tx ${cls('other')}" x="652" y="26" text-anchor="middle" font-size="9">1. Other Psy OPD ≤12m</text>
     <text class="tx ${cls('other')}" x="652" y="40" text-anchor="middle" font-size="9">2. Other Gazette ≤28d</text>
     <text class="tx ${cls('other')}" x="652" y="54" text-anchor="middle" font-size="9">未 attend 1st FU</text>
@@ -235,30 +239,30 @@ function finish(type, why){
     <rect class="n ${bot}" x="18" y="188" width="164" height="29" rx="2"/>
     <text class="tx ${bot}" x="100" y="201" text-anchor="middle" font-size="7.5">If the QEH in-pt FU KCH,</text>
     <text class="tx ${bot}" x="100" y="211" text-anchor="middle" font-size="7.5">KCH will continue to provide care</text>
-    <rect class="n ${cls('psy')}" x="16" y="230" width="188" height="36" rx="4"/><text class="tx ${cls('psy')}" x="110" y="244" text-anchor="middle" font-size="9">Psy OPD</text><text class="tx ${cls('psy')}" x="110" y="256" text-anchor="middle" font-size="8">(KH / YFS / UCH / TKO)</text>
-    <rect class="n ${cls('f12')}" x="16" y="280" width="120" height="26" rx="4"/><text class="tx ${cls('f12')}" x="76" y="297" text-anchor="middle">Form 12 ≤28d</text>
-    <rect class="n ${cls('f12y')||cls('f12n')}" x="148" y="274" width="160" height="38" rx="4"/>
+    <rect class="n ${cls('psy')}" data-id="psy" x="16" y="230" width="188" height="36" rx="4"/><text class="tx ${cls('psy')}" x="110" y="244" text-anchor="middle" font-size="9">Psy OPD</text><text class="tx ${cls('psy')}" x="110" y="256" text-anchor="middle" font-size="8">(KH / YFS / UCH / TKO)</text>
+    <rect class="n ${cls('f12')}" data-id="f12" x="16" y="280" width="120" height="26" rx="4"/><text class="tx ${cls('f12')}" x="76" y="297" text-anchor="middle">Form 12 ≤28d</text>
+    <rect class="n ${cls('f12y')||cls('f12n')}" data-id="f12y f12n" x="148" y="274" width="160" height="38" rx="4"/>
     <text class="tx ${cls('f12y')||cls('f12n')}" x="228" y="289" text-anchor="middle" font-size="8">F12 / CD form location</text>
     <text class="tx ${cls('f12y')||cls('f12n')}" x="228" y="302" text-anchor="middle" font-size="8">是否 KPOU</text>
-    <rect class="n ${cls('slpc')}" x="16" y="324" width="56" height="26" rx="4"/><text class="tx ${cls('slpc')}" x="44" y="341" text-anchor="middle">SLPC</text>
-    <rect class="n ${cls('slpcok')}" x="86" y="318" width="148" height="34" rx="4"/><text class="tx ${cls('slpcok')}" x="160" y="334" text-anchor="middle" font-size="9">KCC 24m + catchment</text><text class="tx ${cls('slpcok')}" x="160" y="346" text-anchor="middle" font-size="9">→ KPOU</text>
-    <rect class="n ${cls('oa')}" x="16" y="378" width="130" height="40" rx="4"/><text class="tx ${cls('oa')}" x="81" y="394" text-anchor="middle">AED 其他醫院</text><text class="tx ${cls('oa')}" x="81" y="408" text-anchor="middle" font-size="9">（Except QEH / UCH / TKO）</text>
-    <rect class="n ${cls('ipo')}" x="16" y="430" width="130" height="44" rx="4"/><text class="tx ${cls('ipo')}" x="81" y="446" text-anchor="middle" font-size="9">In-patient 其他醫院</text><text class="tx ${cls('ipo')}" x="81" y="460" text-anchor="middle" font-size="8">Except QEH / UCH / TKO</text>
-    <rect class="n ${cls('oaw')}" x="162" y="360" width="86" height="24" rx="4"/><text class="tx ${cls('oaw')}" x="205" y="376" text-anchor="middle">With I.D.</text>
-    <rect class="n ${cls('oan')}" x="162" y="392" width="86" height="24" rx="4"/><text class="tx ${cls('oan')}" x="205" y="408" text-anchor="middle">Without I.D. (UID)</text>
-    <rect class="n ${cls('lastfu')}" x="268" y="348" width="176" height="36" rx="4"/><text class="tx ${cls('lastfu')}" x="356" y="362" text-anchor="middle" font-size="9">一年內 FU YFS/UCH/KH/TKOH</text><text class="tx ${cls('lastfu')}" x="356" y="374" text-anchor="middle" font-size="9">或 KH 出院 ≤28日未 PSY FU</text>
-    <rect class="n ${cls('fuo')}" x="260" y="390" width="196" height="38" rx="4"/><text class="tx ${cls('fuo')}" x="358" y="405" text-anchor="middle" font-size="9">FU other OPD</text><text class="tx ${cls('fuo')}" x="358" y="418" text-anchor="middle" font-size="9">或 Default FU 超過1年</text>
-    <rect class="n ${cls('hbot')}" x="162" y="486" width="168" height="36" rx="4"/>
+    <rect class="n ${cls('slpc')}" data-id="slpc" x="16" y="324" width="56" height="26" rx="4"/><text class="tx ${cls('slpc')}" x="44" y="341" text-anchor="middle">SLPC</text>
+    <rect class="n ${cls('slpcok')}" data-id="slpcok" x="86" y="318" width="148" height="34" rx="4"/><text class="tx ${cls('slpcok')}" x="160" y="334" text-anchor="middle" font-size="9">KCC 24m + catchment</text><text class="tx ${cls('slpcok')}" x="160" y="346" text-anchor="middle" font-size="9">→ KPOU</text>
+    <rect class="n ${cls('oa')}" data-id="oa" x="16" y="378" width="130" height="40" rx="4"/><text class="tx ${cls('oa')}" x="81" y="394" text-anchor="middle">AED 其他醫院</text><text class="tx ${cls('oa')}" x="81" y="408" text-anchor="middle" font-size="9">（Except QEH / UCH / TKO）</text>
+    <rect class="n ${cls('ipo')}" data-id="ipo" x="16" y="430" width="130" height="44" rx="4"/><text class="tx ${cls('ipo')}" x="81" y="446" text-anchor="middle" font-size="9">In-patient 其他醫院</text><text class="tx ${cls('ipo')}" x="81" y="460" text-anchor="middle" font-size="8">Except QEH / UCH / TKO</text>
+    <rect class="n ${cls('oaw')}" data-id="oaw" x="162" y="360" width="86" height="24" rx="4"/><text class="tx ${cls('oaw')}" x="205" y="376" text-anchor="middle">With I.D.</text>
+    <rect class="n ${cls('oan')}" data-id="oan" x="162" y="392" width="86" height="24" rx="4"/><text class="tx ${cls('oan')}" x="205" y="408" text-anchor="middle">Without I.D. (UID)</text>
+    <rect class="n ${cls('lastfu')}" data-id="lastfu" x="268" y="348" width="176" height="36" rx="4"/><text class="tx ${cls('lastfu')}" x="356" y="362" text-anchor="middle" font-size="9">一年內 FU YFS/UCH/KH/TKOH</text><text class="tx ${cls('lastfu')}" x="356" y="374" text-anchor="middle" font-size="9">或 KH 出院 ≤28日未 PSY FU</text>
+    <rect class="n ${cls('fuo')}" data-id="fuo" x="260" y="390" width="196" height="38" rx="4"/><text class="tx ${cls('fuo')}" x="358" y="405" text-anchor="middle" font-size="9">FU other OPD</text><text class="tx ${cls('fuo')}" x="358" y="418" text-anchor="middle" font-size="9">或 Default FU 超過1年</text>
+    <rect class="n ${cls('hbot')}" data-id="hbot" x="162" y="486" width="168" height="36" rx="4"/>
     <text class="tx ${cls('hbot')}" x="246" y="500" text-anchor="middle" font-size="9">PYH HBOT</text>
     <text class="tx ${cls('hbot')}" x="246" y="512" text-anchor="middle" font-size="8">高壓氧治療中心 in-pt</text>
-    <rect class="n ${cls('kwh')}" x="162" y="534" width="168" height="36" rx="4"/>
+    <rect class="n ${cls('kwh')}" data-id="kwh" x="162" y="534" width="168" height="36" rx="4"/>
     <text class="tx ${cls('kwh')}" x="246" y="556" text-anchor="middle" font-size="9">KWH in-pt C&A case</text>
-    <rect class="n ${cls('cams')||cls('camno')}" x="340" y="528" width="150" height="48" rx="4"/>
+    <rect class="n ${cls('cams')||cls('camno')}" data-id="cams camno" x="340" y="528" width="150" height="48" rx="4"/>
     <text class="tx ${cls('cams')||cls('camno')}" x="415" y="546" text-anchor="middle" font-size="8">KCH Child Psy SOPD/CAMS</text>
     <text class="tx ${cls('cams')||cls('camno')}" x="415" y="560" text-anchor="middle" font-size="8">或 QEH Child Psy SOPD</text>
-    <rect class="n ${cls('othip')}" x="162" y="630" width="168" height="36" rx="4"/>
+    <rect class="n ${cls('othip')}" data-id="othip" x="162" y="630" width="168" height="36" rx="4"/>
     <text class="tx ${cls('othip')}" x="246" y="652" text-anchor="middle" font-size="9">其他 in-pt case</text>
-    <rect class="n ${cls('hkch')}" x="162" y="582" width="168" height="36" rx="4"/>
+    <rect class="n ${cls('hkch')}" data-id="hkch" x="162" y="582" width="168" height="36" rx="4"/>
     <text class="tx ${cls('hkch')}" x="246" y="604" text-anchor="middle" font-size="9">HKCH 兒童醫院 in-pt</text>
     <rect class="n end ${refer}" x="500" y="448" width="270" height="52" rx="4"/>
     <text class="tx endlabel ${refer}" x="635" y="466" text-anchor="middle" font-size="12">轉介相關負責醫院/病房</text>
@@ -271,16 +275,46 @@ function finish(type, why){
   <div class="path"><b>決策路徑</b>${log.join(" → ")}</div>
   <button class="go" onclick="reset()">重新檢查另一個案</button>`;
   const app=document.getElementById("app");
-  const boxes=[...app.querySelectorAll(".n.on,.n.win,.n.bad")].filter(el=>!el.classList.contains("end"));
-  const lines=[...app.querySelectorAll(".a.on,.a.win,.a.bad")];
-  boxes.forEach((el,i)=>{el.style.animationDelay=(i*UI.boxStep)+"s"; el.style.animationFillMode="both";});
-  lines.forEach((el,i)=>{el.style.animationDelay=(Math.min(i,Math.max(0,boxes.length-1))*UI.boxStep+UI.lineLag)+"s"; el.style.animationDuration=UI.lineDraw+"s"; el.style.animationFillMode="both";});
-  const lineArrive=(Math.max(0, boxes.length-1)*UI.boxStep+UI.lineLag)+UI.lineDraw;
-  const arriveAt=Math.max(lineArrive, (boxes.length*UI.boxStep+1.2)/2);
+  /* 全路線同一規則：入線抵達才亮格，格亮後才出下一條非結果線；結果線一定等所有路徑格亮完。 */
+  const ids=[...new Set(pathIds)];
+  const scale=ids.length>3?3/ids.length:1;
+  const boxStep=UI.boxStep*scale, lineDraw=UI.lineDraw*scale;
+  const boxAt={}, edgeAt=EDGES.map(()=>null);
+  const same=(edge,id)=>edge.to===id || (edge.to==="cams"&&(id==="cams"||id==="camno")) || (edge.to==="f12y"&&(id==="f12y"||id==="f12n")) || (edge.to==="kcond"&&(id==="kcond"||id==="kfail"));
+  let seen=new Set();
+  ids.forEach(id=>{
+    const next=new Set(seen); next.add(id);
+    const incoming=EDGES.map((e,i)=>i).filter(i=>edgeAt[i]==null && EDGES[i].to!=="result" && EDGES[i].on(next,type) && !EDGES[i].on(seen,type) && same(EDGES[i],id));
+    let at=0;
+    if(incoming.length){
+      const start=Math.max(...incoming.map(i=>(boxAt[EDGES[i].from]??0)+boxStep));
+      incoming.forEach(i=>edgeAt[i]=start);
+      at=start+lineDraw;
+    } else {
+      const prior=EDGES.map((e,i)=>i).filter(i=>edgeAt[i]!=null && same(EDGES[i],id));
+      if(prior.length) at=Math.max(...prior.map(i=>edgeAt[i]))+lineDraw;
+    }
+    boxAt[id]=at;
+    app.querySelectorAll(`[data-id~="${id}"]`).forEach(el=>{
+      if(el.dataset.scheduled) return;
+      el.style.animationDelay=at+"s"; el.style.animationFillMode="both"; el.dataset.scheduled="1";
+    });
+    EDGES.forEach((e,i)=>{
+      if(edgeAt[i]==null && e.to!=="result" && e.from===id && e.on(next,type)) edgeAt[i]=at+boxStep;
+    });
+    seen=next;
+  });
+  const lastBox=Math.max(0, ...ids.map(id=>boxAt[id]??0));
+  EDGES.forEach((e,i)=>{ if(edgeAt[i]==null && e.to==="result" && e.on(seen,type)) edgeAt[i]=lastBox+boxStep; });
+    app.querySelectorAll(".a.on,.a.win,.a.bad").forEach(el=>{
+    const at=edgeAt[+el.dataset.i] ?? 0;
+    el.style.animationDelay=at+"s"; el.style.animationDuration=lineDraw+"s"; el.style.animationFillMode="both";
+  });
+  const arriveAt=Math.max(0, ...edgeAt.filter(x=>x!=null), 0)+lineDraw;
   app.querySelectorAll(".end.win,.end.on,.end.bad,.endlabel.win,.endlabel.on,.endlabel.bad").forEach(el=>{el.style.opacity=".3"; el.style.animation="arrive .35s ease forwards"; el.style.animationDelay=arriveAt+"s";});
   app.querySelectorAll(".end.win,.end.on,.end.bad").forEach(el=>{el.style.animation="arrive .35s ease "+arriveAt+"s forwards, glow 1.1s ease-in-out "+(arriveAt+0.3)+"s infinite";});
 }
-function reset(){cur=0; log=[]; lit=new Set(); document.getElementById("p").style.width="8%"; render();}
+function reset(){cur=0; log=[]; lit=new Set(); trail=[]; pathIds=[]; document.getElementById("p").style.width="8%"; render();}
 function validate(){
   QUESTIONS.forEach((q,qi)=>q.o.forEach(o=>{
     if(o.n!=null && !QUESTIONS[o.n]) console.error("跳題編號不存在", qi, o.l, o.n);
