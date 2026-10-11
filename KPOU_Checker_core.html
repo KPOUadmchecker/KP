@@ -108,7 +108,7 @@ const QUESTIONS = [
     {l:"PSY FU default 超過1年 / 出院28日後仍未就診 → KPOU", r:"KPOU", why:"PSY FU default 超過1年 / 出院28日後仍未就診 → KPOU", id:["kcond"]},
     {l:"三項都不符合 → 轉介", r:"Refer", why:"不符合三條件 → 轉介相關負責醫院/病房", id:["kfail","other"]}
   ]},
-  {q:"是否 QEH 住院病人，而且目前由 FU KCH、QEH Child Psy service？", o:[
+  {q:"是否 QEH 住院病人，而且目前由 KCH follow-up/ FU KCH、QEH Child Psy SOPD service？", o:[
     {l:"是QEH in-pt病人，且正在接受由KCH門診提供的服務 → 由 KCH 繼續護理", r:"KCH", why:"QEH in-pt + KCH 門診 → 由 KCH 繼續護理", id:["kch"]},
     {l:"病人正在接受由KCH提供的C&A Psy SOPD服務/ FU QEH Child Psy SOPD → 由 KCH 繼續護理", r:"KCH", why:"QEH in-pt + C&A / Child Psy SOPD → 由 KCH 繼續護理", id:["kch"]},
     {l:"否，不是上述兩個選項的情況 → KPOU", r:"KPOU", why:"In-patient → KPOU", id:["iptop"]}
@@ -171,7 +171,7 @@ const EDGES = [
   {d:"M248 404 L248 438 L490 438 L490 474 L500 474", from:"oan", to:"result", on:(s,r)=>r==="Refer"&&has(s,"oan"), bad:true},
   {d:"M16 202 L4 202 L4 710 L635 710 L635 580", from:"kch", to:"result", on:(s,r)=>r==="KCH"&&has(s,"kch")},
   {d:"M330 504 L330 620 L800 620 L800 280 L488 280", from:"hbot", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"hbot"), win:true},
-  {d:"M146 452 L162 504", from:"ipo", to:"hbot", on:s=>has(s,"ipo")&&has(s,"hbot")},
+  {d:"M158 454 L162 504", from:"ipo", to:"hbot", on:s=>has(s,"ipo")&&has(s,"hbot")},
   {d:"M16 452 L8 452 L8 552 L162 552", from:"ipo", to:"kwh", on:s=>has(s,"ipo")&&has(s,"kwh")},
   {d:"M330 552 L340 552", from:"kwh", to:"cams", on:s=>has(s,"kwh")&&(has(s,"cams")||has(s,"camno"))},
   {d:"M480 552 L490 552 L490 740 L800 740 L800 280 L488 280", from:"camno", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"camno"), win:true},
@@ -288,7 +288,7 @@ function finish(type, why){
     <rect class="n ${cls('slpc')}" data-id="slpc" x="16" y="324" width="56" height="26" rx="4"/><text class="tx ${cls('slpc')}" x="44" y="341" text-anchor="middle">SLPC</text>
     <rect class="n ${cls('slpcok')}" data-id="slpcok" x="86" y="318" width="148" height="34" rx="4"/><text class="tx ${cls('slpcok')}" x="160" y="334" text-anchor="middle" font-size="9">KCC 24m + catchment</text><text class="tx ${cls('slpcok')}" x="160" y="346" text-anchor="middle" font-size="9">→ KPOU</text>
     <rect class="n ${cls('oa')}" data-id="oa" x="16" y="378" width="130" height="40" rx="4"/><text class="tx ${cls('oa')}" x="81" y="394" text-anchor="middle">AED 其他醫院</text><text class="tx ${cls('oa')}" x="81" y="408" text-anchor="middle" font-size="9">（Except QEH / UCH / TKO）</text>
-    <rect class="n ${cls('ipo')}" data-id="ipo" x="16" y="430" width="130" height="44" rx="4"/><text class="tx ${cls('ipo')}" x="81" y="446" text-anchor="middle" font-size="9">In-patient 其他醫院</text><text class="tx ${cls('ipo')}" x="81" y="460" text-anchor="middle" font-size="8">Except QEH / UCH / TKO / KH</text>
+    <rect class="n ${cls('ipo')}" data-id="ipo" x="16" y="428" width="142" height="52" rx="4"/><text class="tx ${cls('ipo')}" x="87" y="444" text-anchor="middle" font-size="9">In-patient 其他醫院</text><text class="tx ${cls('ipo')}" x="87" y="458" text-anchor="middle" font-size="7">（Except QEH / UCH</text><text class="tx ${cls('ipo')}" x="87" y="470" text-anchor="middle" font-size="7">/ TKO / KH）</text>
     <rect class="n ${cls('oaw')}" data-id="oaw" x="162" y="360" width="86" height="24" rx="4"/><text class="tx ${cls('oaw')}" x="205" y="376" text-anchor="middle">With I.D.</text>
     <rect class="n ${cls('oan')}" data-id="oan" x="162" y="392" width="86" height="24" rx="4"/><text class="tx ${cls('oan')}" x="205" y="408" text-anchor="middle">Without I.D. (UID)</text>
     <rect class="n ${cls('lastfu')}" data-id="lastfu" x="268" y="348" width="176" height="36" rx="4"/><text class="tx ${cls('lastfu')}" x="356" y="362" text-anchor="middle" font-size="9">一年內 FU YFS/UCH/KH/TKOH</text><text class="tx ${cls('lastfu')}" x="356" y="374" text-anchor="middle" font-size="9">或 KH 出院 ≤28日未 PSY FU</text>
