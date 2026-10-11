@@ -86,12 +86,12 @@ const MAX_DEPTH = 4; /* 最深約 4 題（含起點）；進度條用此估算 *
 const QUESTIONS = [
   {q:"病人來源 Admission source？", o:[
     {l:"AED（QEH / UCH / TKO）", n:1, id:["aed"]},
-    {l:"In-patient（QEH / UCH / TKO）", n:4, id:["ip"]},
+    {l:"In-patient（QEH / UCH / TKO / KH）", n:4, id:["ip"]},
     {l:"Psy OPD（YFSPC / UCH / KH / TKOH）", r:"KPOU", why:"Psy OPD (KH / YFS / UCH / TKO) → KPOU", id:["psy"]},
     {l:"Form 12（28天內發出）", n:10, id:["f12"]},
     {l:"SLPC", n:5, id:["slpc"]},
     {l:"AED（其他醫院）（Except QEH / UCH / TKOH）", n:6, id:["oa"]},
-    {l:"In-patient（其他醫院）（Except QEH / UCH / TKO）", n:7, id:["ipo"]},
+    {l:"In-patient（其他醫院）（Except QEH / UCH / TKO / KH）", n:7, id:["ipo"]},
     {l:"已有其他 Psy OPD / Gazette 跟進", r:"Refer", why:"右上角拒收條件 → 轉介", id:["other"]}
   ]},
   {q:"病人有沒有香港身份證？", o:[
@@ -274,7 +274,7 @@ function finish(type, why){
     <text class="tx ${cls('other')}" x="652" y="54" text-anchor="middle" font-size="9">未 attend 1st FU</text>
     <rect class="n" x="16" y="155" width="168" height="64" rx="4"/>
     <rect class="n ${top}" x="18" y="157" width="164" height="30" rx="2"/>
-    <text class="tx ${top}" x="100" y="170" text-anchor="middle" font-size="10">In-patient (QEH/UCH/TKO)</text>
+    <text class="tx ${top}" x="100" y="170" text-anchor="middle" font-size="10">In-patient (QEH/UCH/TKO/KH)</text>
     <text class="tx ${top}" x="100" y="182" text-anchor="middle" font-size="8">→ KPOU</text>
     <line x1="18" y1="187" x2="182" y2="187" stroke="#475569"/>
     <rect class="n ${bot}" x="18" y="188" width="164" height="29" rx="2"/>
@@ -288,7 +288,7 @@ function finish(type, why){
     <rect class="n ${cls('slpc')}" data-id="slpc" x="16" y="324" width="56" height="26" rx="4"/><text class="tx ${cls('slpc')}" x="44" y="341" text-anchor="middle">SLPC</text>
     <rect class="n ${cls('slpcok')}" data-id="slpcok" x="86" y="318" width="148" height="34" rx="4"/><text class="tx ${cls('slpcok')}" x="160" y="334" text-anchor="middle" font-size="9">KCC 24m + catchment</text><text class="tx ${cls('slpcok')}" x="160" y="346" text-anchor="middle" font-size="9">→ KPOU</text>
     <rect class="n ${cls('oa')}" data-id="oa" x="16" y="378" width="130" height="40" rx="4"/><text class="tx ${cls('oa')}" x="81" y="394" text-anchor="middle">AED 其他醫院</text><text class="tx ${cls('oa')}" x="81" y="408" text-anchor="middle" font-size="9">（Except QEH / UCH / TKO）</text>
-    <rect class="n ${cls('ipo')}" data-id="ipo" x="16" y="430" width="130" height="44" rx="4"/><text class="tx ${cls('ipo')}" x="81" y="446" text-anchor="middle" font-size="9">In-patient 其他醫院</text><text class="tx ${cls('ipo')}" x="81" y="460" text-anchor="middle" font-size="8">Except QEH / UCH / TKO</text>
+    <rect class="n ${cls('ipo')}" data-id="ipo" x="16" y="430" width="130" height="44" rx="4"/><text class="tx ${cls('ipo')}" x="81" y="446" text-anchor="middle" font-size="9">In-patient 其他醫院</text><text class="tx ${cls('ipo')}" x="81" y="460" text-anchor="middle" font-size="8">Except QEH / UCH / TKO / KH</text>
     <rect class="n ${cls('oaw')}" data-id="oaw" x="162" y="360" width="86" height="24" rx="4"/><text class="tx ${cls('oaw')}" x="205" y="376" text-anchor="middle">With I.D.</text>
     <rect class="n ${cls('oan')}" data-id="oan" x="162" y="392" width="86" height="24" rx="4"/><text class="tx ${cls('oan')}" x="205" y="408" text-anchor="middle">Without I.D. (UID)</text>
     <rect class="n ${cls('lastfu')}" data-id="lastfu" x="268" y="348" width="176" height="36" rx="4"/><text class="tx ${cls('lastfu')}" x="356" y="362" text-anchor="middle" font-size="9">一年內 FU YFS/UCH/KH/TKOH</text><text class="tx ${cls('lastfu')}" x="356" y="374" text-anchor="middle" font-size="9">或 KH 出院 ≤28日未 PSY FU</text>
