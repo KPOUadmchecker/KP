@@ -108,7 +108,7 @@ const QUESTIONS = [
     {l:"PSY FU default 超過1年 / 出院28日後仍未就診 → KPOU", r:"KPOU", why:"PSY FU default 超過1年 / 出院28日後仍未就診 → KPOU", id:["kcond"]},
     {l:"三項都不符合 → 轉介", r:"Refer", why:"不符合三條件 → 轉介相關負責醫院/病房", id:["kfail","other"]}
   ]},
-  {q:"是否 QEH 住院病人，而且目前由 KCH follow-up（包括 C&A case）/ FU QEH Child Psy SOPD？", o:[
+  {q:"是否 QEH 住院病人，而且目前由 FU KCH、QEH Child Psy service？", o:[
     {l:"是QEH in-pt病人，且正在接受由KCH門診提供的服務 → 由 KCH 繼續護理", r:"KCH", why:"QEH in-pt + KCH 門診 → 由 KCH 繼續護理", id:["kch"]},
     {l:"病人正在接受由KCH提供的C&A Psy SOPD服務/ FU QEH Child Psy SOPD → 由 KCH 繼續護理", r:"KCH", why:"QEH in-pt + C&A / Child Psy SOPD → 由 KCH 繼續護理", id:["kch"]},
     {l:"否，不是上述兩個選項的情況 → KPOU", r:"KPOU", why:"In-patient → KPOU", id:["iptop"]}
