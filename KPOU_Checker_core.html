@@ -102,9 +102,9 @@ const QUESTIONS = [
     {l:"Known to MHS", n:3, id:["known"]},
     {l:"New to MHS → KPOU", r:"KPOU", why:"New to MHS → KPOU", id:["newm"]}
   ]},
-  {q:"是否符合以下任何一項？", d:"1. 過去12個月有 FU OPD（YFS/KH/UCH/TKOH）\n2. 28天內 KH PSY出院，未出席第一次 OPD FU\n3. PSY FU default 超過1年 / 出院28日後仍未就診", o:[
+  {q:"是否符合以下任何一項？", d:"1. 過去12個月有 FU OPD（YFS/KH/UCH/TKOH）\n2. KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄\n3. PSY FU default 超過1年 / 出院28日後仍未就診", o:[
     {l:"過去12個月有 FU OPD（YFS/KH/UCH/TKOH） → KPOU", r:"KPOU", why:"過去12個月有 FU OPD → KPOU", id:["kcond"]},
-    {l:"28天內 KH PSY出院，未出席第一次 OPD FU → KPOU", r:"KPOU", why:"28天內 KH PSY出院未出席第一次 OPD FU → KPOU", id:["kcond"]},
+    {l:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", r:"KPOU", why:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", id:["kcond"]},
     {l:"PSY FU default 超過1年 / 出院28日後仍未就診 → KPOU", r:"KPOU", why:"PSY FU default 超過1年 / 出院28日後仍未就診 → KPOU", id:["kcond"]},
     {l:"三項都不符合 → 轉介", r:"Refer", why:"不符合三條件 → 轉介相關負責醫院/病房", id:["kfail","other"]}
   ]},
@@ -127,9 +127,9 @@ const QUESTIONS = [
     {l:"HKCH 兒童醫院 in-pt case", n:9, id:["hkch"]},
     {l:"其他 in-pt case", r:"Refer", why:"其他 in-pt case → 轉介相關負責醫院/病房", id:["othip"]}
   ]},
-  {q:"有 I.D. Card － 邊個情況？", d:"KC/KE症：一年內曾在KH/ YFS / UCH / TKO PSY OPD門診就診，或KH出院28日內未到任何PSY OPD就診\nNon KC/KE症：FU其他PSY OPD門診/Default FU超過一年，或KH出院28日後又未到任何PSY OPD就診", o:[
+  {q:"有 I.D. Card － 邊個情況？", d:"KC/KE症：一年內曾在KH/ YFS / UCH / TKO PSY OPD門診就診，或KH出院28日內而且一年內沒有任何其他OPD FU紀錄\nNon KC/KE症：FU其他PSY OPD門診/Default FU超過一年，或KH出院28日後又未到任何PSY OPD就診", o:[
     {l:"一年內曾經FU YFS/ UCH/ KH/ TKOH → KPOU", r:"KPOU", why:"一年內曾經 FU → KPOU", id:["lastfu"]},
-    {l:"KH 出院不超過28日而且未於任何PSY FU門診就診 → KPOU", r:"KPOU", why:"KH 出院 ≤28日未 PSY FU → KPOU", id:["lastfu"]},
+    {l:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", r:"KPOU", why:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", id:["lastfu"]},
     {l:"FU other OPD / default FU 超過一年 → 轉介相關醫院", r:"Refer", why:"FU other OPD / default FU 超過一年 → 轉介相關醫院", id:["fuo"]},
     {l:"KH 出院超過28日而且未於任何PSY FU門診就診 → 轉介相關醫院", r:"Refer", why:"KH 出院超過28日未 PSY FU → 轉介相關醫院", id:["fuo"]}
   ]},
