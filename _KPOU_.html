@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admission 簡易覆檢工具 v1.1.9</title>
+<style>
+:root{--bg:#0b1120;--card:#111827;--p:#22d3ee;--ok:#34d399;--bad:#f87171;--t:#e2e8f0;--d:#94a3b8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif;background:var(--bg);color:var(--t);padding:12px}
+body{background:radial-gradient(900px 420px at 80% -10%,rgba(34,211,238,.18),transparent 50%),linear-gradient(180deg,#07111f,#0b1120 40%);}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;margin-bottom:10px}
+.logo{font-size:.68rem;letter-spacing:4px;color:#67e8f9;text-transform:uppercase;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+h1{font-size:1.28rem;letter-spacing:.4px}
+.warn{background:linear-gradient(90deg,rgba(251,191,36,.14),rgba(251,191,36,.06));border:1px solid rgba(251,191,36,.35);color:#fbbf24;border-radius:12px;font-size:.76rem;margin-bottom:10px;overflow:hidden;white-space:nowrap}.warn span{display:inline-block;padding:9px 0;animation:marq 16s linear infinite}@keyframes marq{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+.bar{height:4px;background:#1e293b;border-radius:99px;margin-bottom:10px;overflow:hidden}.bar>div{height:100%;background:linear-gradient(90deg,#22d3ee,#34d399);width:8%;box-shadow:0 0 12px rgba(34,211,238,.6)}
+.card{position:relative;background:linear-gradient(180deg,rgba(8,20,36,.92),rgba(6,12,24,.96));border:1px solid rgba(34,211,238,.28);border-radius:18px;padding:16px;box-shadow:0 0 0 1px rgba(34,211,238,.08),0 20px 50px rgba(0,0,0,.4),inset 0 0 40px rgba(34,211,238,.04)}.card:before,.card:after{content:"";position:absolute;width:14px;height:14px;border:1.5px solid #22d3ee;opacity:.7}.card:before{top:8px;left:8px;border-right:0;border-bottom:0}.card:after{right:8px;bottom:8px;border-left:0;border-top:0}
+.tag{font-size:.66rem;color:#67e8f9;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.35);padding:2px 8px;border-radius:4px;letter-spacing:1px;font-family:ui-monospace,Menlo,monospace}
+.q{font-size:1.02rem;font-weight:600;margin:8px 0}
+.detail{font-size:.95rem;color:var(--d);background:#0f172a;padding:8px;border-radius:8px;margin-bottom:8px;line-height:1.5}
+.btn{display:block;width:100%;text-align:left;padding:14px 16px;margin:7px 0;min-height:48px;background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.22);border-radius:12px;color:var(--t);font-size:.92rem;position:relative;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);cursor:pointer;font-family:inherit}
+
+.btn{overflow:hidden}
+.btn.mist{animation:mist .65s ease forwards;filter:blur(0)}
+@keyframes mist{40%{filter:blur(6px);opacity:.55;transform:scale(1.03)}100%{filter:blur(16px);opacity:0;transform:scale(1.08)}}
+.q{animation:rise .35s ease}
+.btn{transition:transform .18s ease,border-color .18s ease,background .18s ease}
+.btn:active{transform:scale(.985)}
+.btn:focus-visible,.go:focus-visible,.back:focus-visible{outline:2px solid #67e8f9;outline-offset:2px}
+.tag{animation:rise .3s ease}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes shimmer{0%{background-position:0 0}100%{background-position:120px 0}}
+.bar>div{background-size:120px 100%;animation:shimmer 1.4s linear infinite}
+.rh{animation:rise .4s ease}
+.svgbox{animation:rise .45s ease}
+.aedopt{display:block;max-width:100%}
+.aedmain{display:block;line-height:1.25}
+.emrow{position:relative;display:block;height:.72em;margin-top:1px}
+.em{position:absolute;left:4ch;top:0;transform:translateX(-50%);font-size:37.5%;line-height:1;white-space:nowrap;opacity:.8}
+.btn.on{border-color:var(--p);background:rgba(34,211,238,.15)}.btn.on::after{content:"✓";position:absolute;right:12px;color:var(--ok);font-weight:700}
+.rh{text-align:center;margin-bottom:10px;padding:12px;border-radius:16px;border:1px solid rgba(148,163,184,.16);background:rgba(15,23,42,.55)}.rt{font-size:1.45rem;font-weight:700;letter-spacing:.3px}
+.KPOU .rt{color:var(--ok)}.KCH .rt{color:#22d3ee}.Refer .rt{color:var(--bad)}
+.rr{font-size:.82rem;color:var(--d);margin-top:4px}
+.ts{font-size:.72rem;color:#64748b;margin-top:8px}
+.svgbox{background:radial-gradient(circle at 50% 42%,rgba(34,211,238,.08),transparent 46%),#0b1220;border:1px solid rgba(148,163,184,.16);border-radius:16px;padding:8px;overflow:hidden;touch-action:pan-y;overscroll-behavior-x:none;margin:8px 0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}svg{width:100%;height:auto;display:block;max-width:100%;pointer-events:none;-webkit-user-select:none;user-select:none}
+.n{fill:#1e293b;stroke:#475569}.n.on{fill:rgba(34,211,238,.22);stroke:#22d3ee}.n.win{fill:rgba(52,211,153,.3);stroke:#34d399}.n.bad{fill:rgba(248,113,113,.32);stroke:#f87171}.n.dim{fill:#111827;stroke:#334155;opacity:.5}
+.tx{fill:#94a3b8;font-size:10px;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",system-ui,sans-serif}.tx.on{fill:#e0f2fe}.tx.win{fill:#d1fae5}.tx.bad{fill:#fecaca}.tx.dim{fill:#64748b}
+.a{stroke:#334155;stroke-width:1.3;fill:none;marker-end:url(#ah)}.a.on{stroke:#22d3ee;stroke-width:2.3}.a.win{stroke:#34d399;stroke-width:2.3}.a.bad{stroke:#f87171;stroke-width:2.3}
+.a.on,.a.win,.a.bad{stroke-dasharray:100;stroke-dashoffset:100;animation:draw 1.1s ease forwards}
+.n.on,.n.win,.n.bad{animation:pop .25s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{from{opacity:.3}to{opacity:1}}
+@keyframes arrive{from{opacity:.3}to{opacity:1}}@keyframes glow{0%{stroke-width:3;filter:drop-shadow(0 0 6px #fff)}50%{stroke-width:5;filter:drop-shadow(0 0 18px #fff) drop-shadow(0 0 28px #22d3ee)}100%{stroke-width:3;filter:drop-shadow(0 0 6px #fff)}}
+.rh{position:relative;overflow:hidden}
+.rh:after{content:"";position:absolute;left:0;right:0;height:40%;top:-40%;background:linear-gradient(180deg,transparent,rgba(255,255,255,.16),transparent);animation:scan 1.6s ease-in-out}
+@keyframes scan{to{top:120%}}
+.svgbox{position:relative}
+.svgbox:after{content:"";position:absolute;left:8px;right:8px;height:2px;background:linear-gradient(90deg,transparent,#22d3ee,transparent);animation:scan 2.2s ease-in-out .2s;pointer-events:none}
+.n.win,.n.on,.n.bad{filter:drop-shadow(0 0 6px rgba(34,211,238,.35))}
+
+.path{background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:10px 12px;font-size:.76rem;color:var(--d);margin-bottom:8px}.path b{color:var(--p);display:block;margin-bottom:6px}
+.path-steps{margin:0;padding:0;list-style:none}.path-steps li{margin:4px 0;line-height:1.45}.path-steps .pq{color:#94a3b8}.path-steps .pa{color:#e2e8f0;font-weight:600}.path-sum{margin-top:8px;padding-top:8px;border-top:1px solid #1e293b;color:#67e8f9}
+.done{font-size:.76rem;color:#94a3b8;border:1px solid rgba(34,211,238,.22);border-radius:10px;padding:8px 10px;margin:0 0 8px;background:rgba(15,23,42,.45)}.done b{color:#e2e8f0;font-weight:650}.go{width:100%;padding:14px;min-height:48px;border:0;border-radius:10px;background:linear-gradient(135deg,#22d3ee,#0891b2);color:#fff;font-weight:700;cursor:pointer;font-family:inherit;font-size:.95rem}
+.navrow{display:flex;gap:8px;margin-top:10px}
+.back{flex:0 0 auto;padding:12px 16px;min-height:48px;min-width:96px;border:1px solid rgba(148,163,184,.35);border-radius:10px;background:rgba(15,23,42,.7);color:var(--t);font-size:.9rem;cursor:pointer;font-family:inherit}
+.back[disabled],.back:disabled{opacity:.35;cursor:not-allowed;pointer-events:none}
+.actions{display:flex;flex-direction:column;gap:0}
+.svgcam{width:100%;transform:translate(0px,0px) scale(1);transform-origin:0 0;will-change:transform}
+.svgbox.zoomed{touch-action:none;-webkit-user-select:none;user-select:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="logo">KPOU admission checker</div><h1>Admission 簡易覆檢工具 v1.1.9</h1></header>
+<div class="warn"><span>僅供輔助使用，詳情請參照相關Guidelines及CL notes(如有）</span></div>
+<div class="bar"><div id="p"></div></div>
+<div class="card" id="app"></div>
+</div>
+<script>
+/* 只改 QUESTIONS / EDGES。不要改 pick、finish、CSS。
+1 選項只把自己的 id 放進路徑。兄弟分支分開 id。
+2 線只在 on(path, result) 為真先高亮。未選線保持淡、無箭頭。
+3 Known 不直指 KPOU。符合才由 kcond 入 KPOU。
+4 終點在引線抵達前保持暗。文字只標 endlabel。
+5 新方格加節點，新線走外圍，不穿方格。可疊其他線。
+UI.nextDelay=650 選中化霧，其他只變淡。 */
+const UI = {nextDelay:455, boxStep:0.14, lineLag:0.07, lineDraw:0.77};
+const MAX_DEPTH = 4; /* 最深約 4 題（含起點）；進度條用此估算 */
+const QUESTIONS = [
+  {q:"病人來源 Admission source？", o:[
+    {l:"<span class=\"aedopt\"><span class=\"aedmain\">AED（QEH / UCH / TKO）</span><span class=\"emrow\"><span class=\"em\">（EM ward = AED）</span></span></span>", n:1, id:["aed"]},
+    {l:"In-patient（QEH / UCH / TKO / KH）", n:4, id:["ip"]},
+    {l:"Psy OPD（YFSPC / UCH / KH / TKOH）", r:"KPOU", why:"Psy OPD (KH / YFS / UCH / TKO) → KPOU", id:["psy"]},
+    {l:"Form 12（28天內發出）", n:10, id:["f12"]},
+    {l:"SLPC", n:5, id:["slpc"]},
+    {l:"<span class=\"aedopt\"><span class=\"aedmain\">AED（其他醫院）（Except QEH/UCH/TKOH）</span><span class=\"emrow\"><span class=\"em\">（EM ward = AED）</span></span></span>", n:6, id:["oa"]},
+    {l:"In-patient（其他醫院）（Except QEH / UCH / TKO / KH）", n:7, id:["ipo"]},
+    {l:"已有其他 Psy OPD / Gazette 跟進", r:"Refer", why:"右上角拒收條件 → 轉介", id:["other"]}
+  ]},
+  {q:"病人有沒有香港身份證？", o:[
+    {l:"有 I.D. Card", n:2, id:["wid"]},
+    {l:"無 I.D. Card (UID) → KPOU", r:"KPOU", why:"AED 無 ID → KPOU", id:["noid"]}
+  ]},
+  {q:"Known to MHS 定 New to MHS？", o:[
+    {l:"Known to MHS", n:3, id:["known"]},
+    {l:"New to MHS → KPOU", r:"KPOU", why:"New to MHS → KPOU", id:["newm"]}
+  ]},
+  {q:"是否符合以下任何一項？", d:"1. 過去12個月有 FU OPD（YFS/KH/UCH/TKOH）\n2. KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄\n3. PSY FU default 超過1年 / 出院28日後仍未就診", o:[
+    {l:"過去12個月有 FU OPD（YFS/KH/UCH/TKOH） → KPOU", r:"KPOU", why:"過去12個月有 FU OPD → KPOU", id:["kcond"]},
+    {l:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", r:"KPOU", why:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", id:["kcond"]},
+    {l:"PSY FU default 超過1年 / 出院28日後仍未就診 → KPOU", r:"KPOU", why:"PSY FU default 超過1年 / 出院28日後仍未就診 → KPOU", id:["kcond"]},
+    {l:"三項都不符合 → 轉介", r:"Refer", why:"不符合三條件 → 轉介相關負責醫院/病房", id:["kfail","other"]}
+  ]},
+  {q:"是否 QEH 住院病人，而且目前由 KCH follow-up/ FU KCH、QEH Child Psy SOPD service？", o:[
+    {l:"是QEH in-pt病人，且正在接受由KCH門診提供的服務 → 由 KCH 繼續護理", r:"KCH", why:"QEH in-pt + KCH 門診 → 由 KCH 繼續護理", id:["kch"]},
+    {l:"病人正在接受由KCH提供的C&A Psy SOPD服務/ FU QEH Child Psy SOPD → 由 KCH 繼續護理", r:"KCH", why:"QEH in-pt + C&A / Child Psy SOPD → 由 KCH 繼續護理", id:["kch"]},
+    {l:"否，不是上述兩個選項的情況 → KPOU", r:"KPOU", why:"In-patient → KPOU", id:["iptop"]}
+  ]},
+  {q:"SLPC 是否符合以下任何一項？", d:"1. 24個月內曾到 KCC Psy SOPD\n2. 地址屬 KCC catchment（沒有其他PSY SOPD 就診記錄）", o:[
+    {l:"符合其中一項 → KPOU", r:"KPOU", why:"SLPC 符合其中一項 → KPOU", id:["slpcok"]},
+    {l:"兩項都不符合 → 轉介", r:"Refer", why:"SLPC 兩項都不符合 → 轉介", id:["slpcno"]}
+  ]},
+  {q:"其他醫院 AED － 邊個情況？", o:[
+    {l:"有 I.D. Card", n:8, id:["oaw"]},
+    {l:"無 I.D. Card (UID) → 轉介", r:"Refer", why:"其他 AED 無 ID → 轉介", id:["oan"]}
+  ]},
+  {q:"In-patient（其他醫院）－ 邊個情況？", o:[
+    {l:"PYH HBOT 高壓氧治療中心 in-pt case", r:"KPOU", why:"PYH HBOT 高壓氧治療中心 in-pt case → KPOU", id:["hbot"]},
+    {l:"KWH in-pt C&A case", n:9, id:["kwh"]},
+    {l:"HKCH 兒童醫院 in-pt case", n:9, id:["hkch"]},
+    {l:"其他 in-pt case", r:"Refer", why:"其他 in-pt case → 轉介相關負責醫院/病房", id:["othip"]}
+  ]},
+  {q:"有 I.D. Card － 邊個情況？", d:"KC/KE症：一年內曾在KH/ YFS / UCH / TKO PSY OPD門診就診，或KH出院28日內而且一年內沒有任何其他OPD FU紀錄\nNon KC/KE症：FU其他PSY OPD門診/Default FU超過一年，或KH出院28日後又未到任何PSY OPD就診", o:[
+    {l:"一年內曾經FU YFS/ UCH/ KH/ TKOH → KPOU", r:"KPOU", why:"一年內曾經 FU → KPOU", id:["lastfu"]},
+    {l:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", r:"KPOU", why:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", id:["lastfu"]},
+    {l:"FU other OPD / default FU 超過一年 → 轉介相關醫院", r:"Refer", why:"FU other OPD / default FU 超過一年 → 轉介相關醫院", id:["fuo"]},
+    {l:"KH 出院超過28日而且未於任何PSY FU門診就診 → 轉介相關醫院", r:"Refer", why:"KH 出院超過28日未 PSY FU → 轉介相關醫院", id:["fuo"]}
+  ]},
+  {q:"病人是否 FU KCH Child Psy SOPD/ CAMS ，或QEH Child Psy SOPD？", o:[
+    {l:"是 → 由 KCH 繼續護理", r:"KCH", why:"FU KCH Child Psy SOPD/CAMS 或 QEH Child Psy SOPD → 由 KCH 繼續護理", id:["cams"]},
+    {l:"否 → KPOU", r:"KPOU", why:"非 FU KCH Child Psy SOPD/CAMS / QEH Child Psy → KPOU", id:["camno"]}
+  ]},
+  {q:"F12 / CD form location 是否 KPOU？", o:[
+    {l:"是 → KPOU", r:"KPOU", why:"F12 / CD form location 是 KPOU → KPOU", id:["f12y"]},
+    {l:"否 → 轉介相關負責醫院", r:"Refer", why:"F12 / CD form location 不是 KPOU → 轉介相關負責醫院", id:["f12n"]}
+  ]}
+];
+const has = (set, id) => set.has(id);
+const EDGES = [
+  {d:"M132 32 L148 24", from:"aed", to:"wid", on:s=>has(s,"aed")&&has(s,"wid")},
+  {d:"M132 44 L148 54", from:"aed", to:"noid", on:s=>has(s,"aed")&&has(s,"noid")},
+  {d:"M236 24 L252 20", from:"wid", to:"known", on:s=>has(s,"wid")&&has(s,"known")},
+  {d:"M236 24 L252 54", from:"wid", to:"newm", on:s=>has(s,"wid")&&has(s,"newm")},
+  {d:"M358 20 L374 28", from:"known", to:"kcond", on:s=>has(s,"known")},
+  {d:"M532 36 L550 36", from:"kfail", to:"other", on:s=>has(s,"kfail")||has(s,"other"), bad:true},
+  {d:"M454 66 L454 150 L440 238", from:"kcond", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"kcond"), win:true},
+  {d:"M306 66 L340 140 L380 238", from:"newm", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"newm"), win:true},
+  {d:"M193 66 L193 150 L350 238", from:"noid", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"noid"), win:true},
+  {d:"M760 66 L760 448", from:"kfail", to:"result", on:(s,r)=>r==="Refer"&&(has(s,"kfail")||has(s,"other")), bad:true},
+  {d:"M184 172 L342 265", from:"iptop", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"iptop"), win:true},
+  {d:"M166 255 L342 275", from:"psy", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"psy"), win:true},
+  {d:"M136 293 L148 293", from:"f12", to:"f12y", on:s=>has(s,"f12")&&(has(s,"f12y")||has(s,"f12n"))},
+  {d:"M308 293 L332 288", from:"f12y", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"f12y"), win:true},
+  {d:"M148 312 L8 312 L8 740 L800 740 L800 474 L770 474", from:"f12n", to:"result", on:(s,r)=>r==="Refer"&&has(s,"f12n"), bad:true},
+  {d:"M72 337 L84 336", from:"slpc", to:"slpcok", on:s=>has(s,"slpc")&&!has(s,"slpcno")},
+  {d:"M16 337 L4 337 L4 710 L800 710 L800 474 L770 474", from:"slpcno", to:"result", on:(s,r)=>r==="Refer"&&has(s,"slpcno"), bad:true},
+  {d:"M234 335 L342 300", from:"slpcok", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"slpcok"), win:true},
+  {d:"M146 392 L160 376", from:"oa", to:"oaw", on:s=>has(s,"oa")&&has(s,"oaw")},
+  {d:"M146 408 L160 404", from:"oa", to:"oan", on:s=>has(s,"oa")&&has(s,"oan")},
+  {d:"M248 372 L266 366", from:"oaw", to:"lastfu", on:s=>has(s,"lastfu")},
+  {d:"M248 392 L266 408", from:"oaw", to:"fuo", on:s=>has(s,"fuo")},
+  {d:"M356 348 L356 330 L400 322", from:"lastfu", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"lastfu"), win:true},
+  {d:"M444 410 L500 474", from:"fuo", to:"result", on:(s,r)=>r==="Refer"&&has(s,"fuo"), bad:true},
+  {d:"M248 404 L248 438 L490 438 L490 474 L500 474", from:"oan", to:"result", on:(s,r)=>r==="Refer"&&has(s,"oan"), bad:true},
+  {d:"M16 202 L4 202 L4 710 L635 710 L635 580", from:"kch", to:"result", on:(s,r)=>r==="KCH"&&has(s,"kch")},
+  {d:"M330 504 L330 620 L800 620 L800 280 L488 280", from:"hbot", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"hbot"), win:true},
+  {d:"M158 454 L162 504", from:"ipo", to:"hbot", on:s=>has(s,"ipo")&&has(s,"hbot")},
+  {d:"M16 452 L8 452 L8 552 L162 552", from:"ipo", to:"kwh", on:s=>has(s,"ipo")&&has(s,"kwh")},
+  {d:"M330 552 L340 552", from:"kwh", to:"cams", on:s=>has(s,"kwh")&&(has(s,"cams")||has(s,"camno"))},
+  {d:"M480 552 L490 552 L490 740 L800 740 L800 280 L488 280", from:"camno", to:"result", on:(s,r)=>r==="KPOU"&&has(s,"camno"), win:true},
+  {d:"M480 552 L500 554", from:"cams", to:"result", on:(s,r)=>r==="KCH"&&has(s,"cams")},
+  {d:"M16 468 L4 468 L4 648 L162 648", from:"ipo", to:"othip", on:s=>has(s,"ipo")&&has(s,"othip")},
+  {d:"M330 648 L348 648 L348 720 L790 720 L790 474 L770 474", from:"othip", to:"result", on:(s,r)=>r==="Refer"&&has(s,"othip"), bad:true},
+  {d:"M16 460 L8 460 L8 600 L162 600", from:"ipo", to:"hkch", on:s=>has(s,"ipo")&&has(s,"hkch")},
+  {d:"M330 600 L410 600 L410 576", from:"hkch", to:"cams", on:s=>has(s,"hkch")&&(has(s,"cams")||has(s,"camno"))}
+];
+let cur=0, log=[], lit=new Set(), trail=[], pathIds=[], history=[], picking=false;
+function progressWidth(){
+  return (8 + Math.min(trail.length, MAX_DEPTH) / MAX_DEPTH * 85) + "%";
+}
+function snapState(){
+  return {cur, log:[...log], lit:new Set(lit), trail:trail.map(t=>({q:t.q,a:t.a})), pathIds:[...pathIds]};
+}
+function restoreState(s){
+  cur=s.cur; log=s.log; lit=s.lit; trail=s.trail; pathIds=s.pathIds;
+}
+function goBack(){
+  if(picking || !history.length) return;
+  restoreState(history.pop());
+  document.getElementById("p").style.width=progressWidth();
+  render();
+}
+function render(){
+  document.getElementById("p").style.width=progressWidth();
+  const q=QUESTIONS[cur];
+  let h=trail.map((s,i)=>`<div class="done"><span class="tag">0${i+1}</span> ${s.q}<b>${s.a}</b></div>`).join("");
+  h+=`<span class="tag">STEP ${String(trail.length+1).padStart(2,"0")}</span><div class="q">${q.q}</div>`;
+  if(q.d) h+=`<div class="detail">${q.d.replace(/\n/g,"<br>")}</div>`;
+  q.o.forEach((o,i)=>h+=`<button type="button" class="btn" onclick="pick(${i})">${o.l}</button>`);
+  const canBack=history.length>0;
+  h+=`<div class="navrow"><button type="button" class="back" onclick="goBack()" ${canBack?"":"disabled"} aria-label="上一步">上一步</button></div>`;
+  document.getElementById("app").innerHTML=h;
+  const box=document.getElementById("app");
+  box.lastElementChild && box.lastElementChild.scrollIntoView({block:"nearest",behavior:"smooth"});
+}
+function pick(i){
+  if(picking) return;
+  picking=true;
+  history.push(snapState());
+  const o=QUESTIONS[cur].o[i];
+  document.querySelectorAll(".btn").forEach((b,idx)=>{
+    if(idx===i){b.classList.add("on"); b.classList.add("mist");}
+    else {b.style.opacity=".35"; b.style.pointerEvents="none";}
+  });
+  const backBtn=document.querySelector(".back");
+  if(backBtn){backBtn.disabled=true; backBtn.style.pointerEvents="none";}
+  const ans=o.l.split("→")[0].trim();
+  log.push(ans);
+  (o.id||[]).forEach(x=>{lit.add(x); pathIds.push(x);});
+  setTimeout(()=>{ picking=false; if(o.r) finish(o.r,o.why); else {trail.push({q:QUESTIONS[cur].q,a:ans}); cur=o.n; render();} },UI.nextDelay);
+}
+function cls(id){ return lit.has(id)?"on":""; }
+function finish(type, why){
+  document.getElementById("p").style.width="100%";
+  const icon=type==="KPOU"?"✅":type==="KCH"?"🔵":"➡️";
+  const title=type==="KPOU"?"KPOU":type==="KCH"?"由 KCH 繼續護理":"轉介相關負責醫院/病房";
+  const kpou=type==="KPOU"?"win":"dim";
+  const refer=type==="Refer"?"bad":"dim";
+  const kch=type==="KCH"?"on":"dim";
+  const top=type==="KPOU"&&lit.has("iptop")?"win":"";
+  const bot=type==="KCH"&&lit.has("kch")?"on":"";
+  const edges=EDGES.map((e,i)=>{
+    const on=e.on(lit,type);
+    if(!on) return `<path class="a" pathLength="100" d="${e.d}" style="opacity:.18;marker-end:none"/>`;
+    const c=e.bad?"bad":e.win?"win":"on";
+    return `<path class="a ${c}" data-i="${i}" pathLength="100" d="${e.d}"/>`;
+  }).join("");
+  const now=new Date();
+  const ts=now.toLocaleString("zh-HK",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+  let pathHtml='<ul class="path-steps">';
+  trail.forEach((s,i)=>{
+    pathHtml+=`<li><span class="pq">${i+1}. ${s.q}</span><br><span class="pa">→ ${s.a}</span></li>`;
+  });
+  const lastQ=QUESTIONS[cur].q;
+  const lastA=log[log.length-1]||"";
+  pathHtml+=`<li><span class="pq">${trail.length+1}. ${lastQ}</span><br><span class="pa">→ ${lastA}</span></li>`;
+  pathHtml+=`</ul><div class="path-sum">結果：${title}</div>`;
+  document.getElementById("app").innerHTML=`
+  <div class="rh ${type}"><div class="tag">RESULT</div><div style="font-size:1.8rem;margin-top:6px">${icon}</div><div class="rt">${title}</div><div class="ts">${ts}</div></div>
+  <div class="svgbox"><div class="svgcam" id="svgcam"><svg viewBox="0 0 840 780" xmlns="http://www.w3.org/2000/svg">
+    <defs><marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#64748b"/></marker></defs>
+    <ellipse class="n end ${kpou}" cx="410" cy="280" rx="78" ry="48"/>
+    <text class="tx endlabel ${kpou}" x="410" y="286" text-anchor="middle" font-size="18" font-weight="700">KPOU</text>
+    <rect class="n ${cls('aed')}" data-id="aed" x="16" y="18" width="116" height="40" rx="4"/><text class="tx ${cls('aed')}" x="74" y="36" text-anchor="middle">AED</text><text class="tx ${cls('aed')}" x="74" y="48" text-anchor="middle" font-size="9">(QEH/UCH/TKO)</text>
+    <rect class="n ${cls('wid')}" data-id="wid" x="150" y="12" width="86" height="24" rx="4"/><text class="tx ${cls('wid')}" x="193" y="28" text-anchor="middle">With I.D.</text>
+    <rect class="n ${cls('noid')}" data-id="noid" x="150" y="42" width="86" height="24" rx="4"/><text class="tx ${cls('noid')}" x="193" y="58" text-anchor="middle">Without I.D. (UID)</text>
+    <rect class="n ${cls('known')}" data-id="known" x="254" y="8" width="104" height="24" rx="4"/><text class="tx ${cls('known')}" x="306" y="24" text-anchor="middle">Known to MHS</text>
+    <rect class="n ${cls('newm')}" data-id="newm" x="254" y="42" width="104" height="24" rx="4"/><text class="tx ${cls('newm')}" x="306" y="58" text-anchor="middle">New to MHS</text>
+    <rect class="n ${cls('kcond')||cls('kfail')}" data-id="kcond kfail" x="376" y="8" width="156" height="58" rx="4"/>
+    <text class="tx ${cls('kcond')||cls('kfail')}" x="454" y="24" text-anchor="middle" font-size="9">1. FU OPD ≤12m</text>
+    <text class="tx ${cls('kcond')||cls('kfail')}" x="454" y="36" text-anchor="middle" font-size="9">2. Gazette DC ≤28d 未FU</text>
+    <text class="tx ${cls('kcond')||cls('kfail')}" x="454" y="48" text-anchor="middle" font-size="9">3. Default >1 year</text>
+    
+    <rect class="n ${cls('other')}" data-id="other" x="552" y="8" width="200" height="58" rx="4"/>
+    <text class="tx ${cls('other')}" x="652" y="26" text-anchor="middle" font-size="9">1. Other Psy OPD ≤12m</text>
+    <text class="tx ${cls('other')}" x="652" y="40" text-anchor="middle" font-size="9">2. Other Gazette ≤28d</text>
+    <text class="tx ${cls('other')}" x="652" y="54" text-anchor="middle" font-size="9">未 attend 1st FU</text>
+    <rect class="n" x="16" y="155" width="168" height="64" rx="4"/>
+    <rect class="n ${top}" x="18" y="157" width="164" height="30" rx="2"/>
+    <text class="tx ${top}" x="100" y="170" text-anchor="middle" font-size="10">In-patient (QEH/UCH/TKO/KH)</text>
+    <text class="tx ${top}" x="100" y="182" text-anchor="middle" font-size="8">→ KPOU</text>
+    <line x1="18" y1="187" x2="182" y2="187" stroke="#475569"/>
+    <rect class="n ${bot}" x="18" y="188" width="164" height="29" rx="2"/>
+    <text class="tx ${bot}" x="100" y="201" text-anchor="middle" font-size="7.5">If the QEH in-pt FU KCH,</text>
+    <text class="tx ${bot}" x="100" y="211" text-anchor="middle" font-size="7.5">KCH will continue to provide care</text>
+    <rect class="n ${cls('psy')}" data-id="psy" x="16" y="230" width="188" height="36" rx="4"/><text class="tx ${cls('psy')}" x="110" y="244" text-anchor="middle" font-size="9">Psy OPD</text><text class="tx ${cls('psy')}" x="110" y="256" text-anchor="middle" font-size="8">(KH / YFS / UCH / TKO)</text>
+    <rect class="n ${cls('f12')}" data-id="f12" x="16" y="280" width="120" height="26" rx="4"/><text class="tx ${cls('f12')}" x="76" y="297" text-anchor="middle">Form 12 ≤28d</text>
+    <rect class="n ${cls('f12y')||cls('f12n')}" data-id="f12y f12n" x="148" y="274" width="160" height="38" rx="4"/>
+    <text class="tx ${cls('f12y')||cls('f12n')}" x="228" y="289" text-anchor="middle" font-size="8">F12 / CD form location</text>
+    <text class="tx ${cls('f12y')||cls('f12n')}" x="228" y="302" text-anchor="middle" font-size="8">是否 KPOU</text>
+    <rect class="n ${cls('slpc')}" data-id="slpc" x="16" y="324" width="56" height="26" rx="4"/><text class="tx ${cls('slpc')}" x="44" y="341" text-anchor="middle">SLPC</text>
+    <rect class="n ${cls('slpcok')}" data-id="slpcok" x="86" y="318" width="148" height="34" rx="4"/><text class="tx ${cls('slpcok')}" x="160" y="334" text-anchor="middle" font-size="9">KCC 24m + catchment</text><text class="tx ${cls('slpcok')}" x="160" y="346" text-anchor="middle" font-size="9">→ KPOU</text>
+    <rect class="n ${cls('oa')}" data-id="oa" x="16" y="378" width="130" height="40" rx="4"/><text class="tx ${cls('oa')}" x="81" y="394" text-anchor="middle">AED 其他醫院</text><text class="tx ${cls('oa')}" x="81" y="408" text-anchor="middle" font-size="9">（Except QEH / UCH / TKO）</text>
+    <rect class="n ${cls('ipo')}" data-id="ipo" x="16" y="428" width="142" height="52" rx="4"/><text class="tx ${cls('ipo')}" x="87" y="444" text-anchor="middle" font-size="9">In-patient 其他醫院</text><text class="tx ${cls('ipo')}" x="87" y="458" text-anchor="middle" font-size="7">（Except QEH / UCH</text><text class="tx ${cls('ipo')}" x="87" y="470" text-anchor="middle" font-size="7">/ TKO / KH）</text>
+    <rect class="n ${cls('oaw')}" data-id="oaw" x="162" y="360" width="86" height="24" rx="4"/><text class="tx ${cls('oaw')}" x="205" y="376" text-anchor="middle">With I.D.</text>
+    <rect class="n ${cls('oan')}" data-id="oan" x="162" y="392" width="86" height="24" rx="4"/><text class="tx ${cls('oan')}" x="205" y="408" text-anchor="middle">Without I.D. (UID)</text>
+    <rect class="n ${cls('lastfu')}" data-id="lastfu" x="260" y="348" width="196" height="36" rx="4"/><text class="tx ${cls('lastfu')}" x="358" y="362" text-anchor="middle" font-size="9">一年內 FU YFS/UCH/KH/TKOH</text><text class="tx ${cls('lastfu')}" x="358" y="374" text-anchor="middle" font-size="8">或 KH 出院 ≤28日+一年內沒有FU紀錄</text>
+    <rect class="n ${cls('fuo')}" data-id="fuo" x="260" y="390" width="196" height="38" rx="4"/><text class="tx ${cls('fuo')}" x="358" y="405" text-anchor="middle" font-size="9">FU other OPD</text><text class="tx ${cls('fuo')}" x="358" y="418" text-anchor="middle" font-size="9">或 Default FU 超過1年</text>
+    <rect class="n ${cls('hbot')}" data-id="hbot" x="162" y="486" width="168" height="36" rx="4"/>
+    <text class="tx ${cls('hbot')}" x="246" y="500" text-anchor="middle" font-size="9">PYH HBOT</text>
+    <text class="tx ${cls('hbot')}" x="246" y="512" text-anchor="middle" font-size="8">高壓氧治療中心 in-pt</text>
+    <rect class="n ${cls('kwh')}" data-id="kwh" x="162" y="534" width="168" height="36" rx="4"/>
+    <text class="tx ${cls('kwh')}" x="246" y="556" text-anchor="middle" font-size="9">KWH in-pt C&A case</text>
+    <rect class="n ${cls('cams')||cls('camno')}" data-id="cams camno" x="340" y="528" width="150" height="48" rx="4"/>
+    <text class="tx ${cls('cams')||cls('camno')}" x="415" y="546" text-anchor="middle" font-size="8">KCH Child Psy SOPD/CAMS</text>
+    <text class="tx ${cls('cams')||cls('camno')}" x="415" y="560" text-anchor="middle" font-size="8">或 QEH Child Psy SOPD</text>
+    <rect class="n ${cls('othip')}" data-id="othip" x="162" y="630" width="168" height="36" rx="4"/>
+    <text class="tx ${cls('othip')}" x="246" y="652" text-anchor="middle" font-size="9">其他 in-pt case</text>
+    <rect class="n ${cls('hkch')}" data-id="hkch" x="162" y="582" width="168" height="36" rx="4"/>
+    <text class="tx ${cls('hkch')}" x="246" y="604" text-anchor="middle" font-size="9">HKCH 兒童醫院 in-pt</text>
+    <rect class="n end ${refer}" x="500" y="448" width="270" height="52" rx="4"/>
+    <text class="tx endlabel ${refer}" x="635" y="466" text-anchor="middle" font-size="12">轉介相關負責醫院/病房</text>
+    <text class="tx endlabel ${refer}" x="635" y="484" text-anchor="middle" font-size="10">Refer to other responsible Gazette ward</text>
+    <rect class="n end ${kch}" x="500" y="528" width="270" height="52" rx="4"/>
+    <text class="tx endlabel ${kch}" x="635" y="548" text-anchor="middle" font-size="13">由 KCH 繼續護理</text>
+    <text class="tx endlabel ${kch}" x="635" y="566" text-anchor="middle" font-size="11">If the QEH in-pt who FU KCH</text>
+    ${edges}
+  </svg></div></div>
+  <div class="path"><b>決策路徑</b>${pathHtml}</div>
+  <div class="actions">
+    <button type="button" class="go" onclick="reset()">重新檢查另一個案</button>
+  </div>`;
+  const app=document.getElementById("app");
+  mapScale=1; mapTX=0; mapTY=0; mapZoomReady=false; pinch=null; pan=null;
+  /* 動畫期間鎖定：touch-action pan-y（可捲頁），忽略雙指縮放 */
+  const svgbox=app.querySelector(".svgbox");
+  if(svgbox){
+    svgbox.classList.remove("zoomed");
+    svgbox.style.overflow="hidden";
+    svgbox.style.touchAction="pan-y";
+    svgbox.style.overscrollBehaviorX="none";
+    svgbox.scrollLeft=0;
+    svgbox.scrollTop=0;
+    const svg=svgbox.querySelector("svg");
+    if(svg){svg.style.width="100%";svg.style.height="auto";svg.style.maxWidth="100%";svg.style.pointerEvents="none";}
+    bindMapGestures(svgbox);
+  }
+  applyMapTransform();
+  /* 結果注入後立刻把樹捲入視窗中央，再開始路徑動畫 */
+  if(svgbox){
+    const beh=(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)?"auto":"smooth";
+    svgbox.scrollIntoView({block:"center",behavior:beh});
+  }
+  /* 全路線同一規則：入線抵達才亮格，格亮後才出下一條非結果線；結果線一定等所有路徑格亮完。 */
+  const ids=[...new Set(pathIds)];
+  const scale=ids.length>3?3/ids.length:1;
+  const boxStep=UI.boxStep*scale, lineDraw=UI.lineDraw*scale;
+  const boxAt={}, edgeAt=EDGES.map(()=>null);
+  const same=(edge,id)=>edge.to===id || (edge.to==="cams"&&(id==="cams"||id==="camno")) || (edge.to==="f12y"&&(id==="f12y"||id==="f12n")) || (edge.to==="kcond"&&(id==="kcond"||id==="kfail"));
+  let seen=new Set();
+  ids.forEach(id=>{
+    const next=new Set(seen); next.add(id);
+    const incoming=EDGES.map((e,i)=>i).filter(i=>edgeAt[i]==null && EDGES[i].to!=="result" && EDGES[i].on(next,type) && !EDGES[i].on(seen,type) && same(EDGES[i],id));
+    let at=0;
+    if(incoming.length){
+      const start=Math.max(...incoming.map(i=>(boxAt[EDGES[i].from]??0)+boxStep));
+      incoming.forEach(i=>edgeAt[i]=start);
+      at=start+lineDraw;
+    } else {
+      const prior=EDGES.map((e,i)=>i).filter(i=>edgeAt[i]!=null && same(EDGES[i],id));
+      if(prior.length) at=Math.max(...prior.map(i=>edgeAt[i]))+lineDraw;
+    }
+    boxAt[id]=at;
+    app.querySelectorAll(`[data-id~="${id}"]`).forEach(el=>{
+      if(el.dataset.scheduled) return;
+      el.style.animationDelay=at+"s"; el.style.animationFillMode="both"; el.dataset.scheduled="1";
+    });
+    EDGES.forEach((e,i)=>{
+      if(edgeAt[i]==null && e.to!=="result" && e.from===id && e.on(next,type)) edgeAt[i]=at+boxStep;
+    });
+    seen=next;
+  });
+  const lastBox=Math.max(0, ...ids.map(id=>boxAt[id]??0));
+  EDGES.forEach((e,i)=>{ if(edgeAt[i]==null && e.to==="result" && e.on(seen,type)) edgeAt[i]=lastBox+boxStep; });
+    app.querySelectorAll(".a.on,.a.win,.a.bad").forEach(el=>{
+    const at=edgeAt[+el.dataset.i] ?? 0;
+    el.style.animationDelay=at+"s"; el.style.animationDuration=lineDraw+"s"; el.style.animationFillMode="both";
+  });
+  const arriveAt=Math.max(0, ...edgeAt.filter(x=>x!=null), 0)+lineDraw;
+  app.querySelectorAll(".end.win,.end.on,.end.bad,.endlabel.win,.endlabel.on,.endlabel.bad").forEach(el=>{el.style.opacity=".3"; el.style.animation="arrive .35s ease forwards"; el.style.animationDelay=arriveAt+"s";});
+  app.querySelectorAll(".end.win,.end.on,.end.bad").forEach(el=>{el.style.animation="arrive .35s ease "+arriveAt+"s forwards, glow 1.1s ease-in-out "+(arriveAt+0.3)+"s infinite";});
+  /* 動畫完成（arriveAt + ~0.4s buffer）後才解鎖雙指 pinch-zoom */
+  scheduleMapZoomUnlock(arriveAt);
+}
+let mapScale=1, mapTX=0, mapTY=0, mapZoomReady=false;
+let pinch=null, pan=null, lastTap=0;
+const MAP_SCALE_MIN=1, MAP_SCALE_MAX=2.5;
+const MAP_UNLOCK_BUFFER=0.4; /* seconds after arriveAt */
+function applyMapTransform(){
+  const cam=document.getElementById("svgcam");
+  const box=document.querySelector(".svgbox");
+  if(mapScale<MAP_SCALE_MIN) mapScale=MAP_SCALE_MIN;
+  if(mapScale>MAP_SCALE_MAX) mapScale=MAP_SCALE_MAX;
+  if(mapScale<=1){ mapScale=1; mapTX=0; mapTY=0; }
+  if(cam){
+    cam.style.transformOrigin="0 0";
+    cam.style.width="100%";
+    cam.style.transform=`translate(${mapTX}px,${mapTY}px) scale(${mapScale})`;
+  }
+  if(box){
+    box.style.overflow="hidden";
+    box.style.overscrollBehaviorX="none";
+    if(mapZoomReady && mapScale>1){
+      box.style.touchAction="none";
+      box.classList.add("zoomed");
+    } else {
+      box.style.touchAction="pan-y";
+      box.classList.remove("zoomed");
+    }
+  }
+}
+function clampPan(){
+  const box=document.querySelector(".svgbox");
+  if(!box || mapScale<=1){ mapTX=0; mapTY=0; return; }
+  const w=box.clientWidth, h=box.clientHeight;
+  const minX=w*(1-mapScale), minY=h*(1-mapScale);
+  mapTX=Math.min(0, Math.max(minX, mapTX));
+  mapTY=Math.min(0, Math.max(minY, mapTY));
+}
+function setMapZoomEnabled(on){
+  mapZoomReady=!!on;
+  if(!on){ pinch=null; pan=null; }
+  applyMapTransform();
+}
+function scheduleMapZoomUnlock(arriveAt){
+  setMapZoomEnabled(false);
+  const ms=Math.max(0, ((arriveAt||0)+MAP_UNLOCK_BUFFER)*1000);
+  setTimeout(()=>setMapZoomEnabled(true), ms);
+}
+function resetMapView(){
+  mapScale=1; mapTX=0; mapTY=0;
+  pinch=null; pan=null;
+  applyMapTransform();
+}
+function bindMapGestures(box){
+  if(!box || box.dataset.gesturesBound==="1") return;
+  box.dataset.gesturesBound="1";
+  box.addEventListener("touchstart", onMapTouchStart, {passive:false});
+  box.addEventListener("touchmove", onMapTouchMove, {passive:false});
+  box.addEventListener("touchend", onMapTouchEnd, {passive:false});
+  box.addEventListener("touchcancel", onMapTouchEnd, {passive:false});
+}
+function onMapTouchStart(e){
+  const box=e.currentTarget;
+  const br=box.getBoundingClientRect();
+  /* 動畫鎖定：允單指捲頁；雙指縮放忽略並擋瀏覽器頁面 pinch */
+  if(!mapZoomReady){
+    if(e.touches.length>=2) e.preventDefault();
+    pinch=null; pan=null;
+    return;
+  }
+  if(e.touches.length===2){
+    pan=null;
+    const t0=e.touches[0], t1=e.touches[1];
+    const d=Math.hypot(t0.clientX-t1.clientX, t0.clientY-t1.clientY)||1;
+    const mx=(t0.clientX+t1.clientX)/2-br.left;
+    const my=(t0.clientY+t1.clientY)/2-br.top;
+    pinch={d0:d, s0:mapScale, tx0:mapTX, ty0:mapTY, mx0:mx, my0:my};
+    e.preventDefault();
+    return;
+  }
+  if(e.touches.length===1){
+    const now=Date.now();
+    if(now-lastTap<280){
+      resetMapView();
+      lastTap=0;
+      e.preventDefault();
+      return;
+    }
+    lastTap=now;
+    if(mapScale>1){
+      pan={x0:e.touches[0].clientX, y0:e.touches[0].clientY, tx0:mapTX, ty0:mapTY};
+      e.preventDefault(); /* 放大後單指拖圖，擋頁面捲動 */
+    } else {
+      pan=null; /* scale===1：唔 preventDefault，touch-action pan-y 可捲頁 */
+    }
+  }
+}
+function onMapTouchMove(e){
+  if(!mapZoomReady){
+    if(e.touches.length>=2) e.preventDefault();
+    return;
+  }
+  const box=e.currentTarget;
+  const br=box.getBoundingClientRect();
+  if(e.touches.length===2){
+    const t0=e.touches[0], t1=e.touches[1];
+    if(!pinch){
+      const d=Math.hypot(t0.clientX-t1.clientX, t0.clientY-t1.clientY)||1;
+      const mx=(t0.clientX+t1.clientX)/2-br.left;
+      const my=(t0.clientY+t1.clientY)/2-br.top;
+      pinch={d0:d, s0:mapScale, tx0:mapTX, ty0:mapTY, mx0:mx, my0:my};
+    }
+    const d=Math.hypot(t0.clientX-t1.clientX, t0.clientY-t1.clientY)||1;
+    const mx=(t0.clientX+t1.clientX)/2-br.left;
+    const my=(t0.clientY+t1.clientY)/2-br.top;
+    let ns=pinch.s0*(d/pinch.d0);
+    ns=Math.min(MAP_SCALE_MAX, Math.max(MAP_SCALE_MIN, ns));
+    const cx=(pinch.mx0-pinch.tx0)/pinch.s0;
+    const cy=(pinch.my0-pinch.ty0)/pinch.s0;
+    mapScale=ns;
+    mapTX=mx-cx*ns;
+    mapTY=my-cy*ns;
+    if(mapScale>1) clampPan();
+    applyMapTransform();
+    e.preventDefault();
+    return;
+  }
+  if(e.touches.length===1 && pan && mapScale>1){
+    mapTX=pan.tx0+(e.touches[0].clientX-pan.x0);
+    mapTY=pan.ty0+(e.touches[0].clientY-pan.y0);
+    clampPan();
+    applyMapTransform();
+    e.preventDefault();
+  }
+}
+function onMapTouchEnd(e){
+  if(e.touches.length<2) pinch=null;
+  if(e.touches.length===0){ pan=null; }
+  else if(e.touches.length===1 && mapZoomReady && mapScale>1){
+    pan={x0:e.touches[0].clientX, y0:e.touches[0].clientY, tx0:mapTX, ty0:mapTY};
+  }
+  if(mapScale<=1) applyMapTransform();
+}
+function reset(){cur=0; log=[]; lit=new Set(); trail=[]; pathIds=[]; history=[]; picking=false; mapScale=1; mapTX=0; mapTY=0; mapZoomReady=false; pinch=null; pan=null; document.getElementById("p").style.width="8%"; render();}
+function validate(){
+  QUESTIONS.forEach((q,qi)=>q.o.forEach(o=>{
+    if(o.n!=null && !QUESTIONS[o.n]) console.error("跳題編號不存在", qi, o.l, o.n);
+    if(o.r && !o.why) console.error("結果缺少 why", o.l);
+    (o.id||[]).forEach(id=>{
+      if(!EDGES.some(e=>String(e.on).includes(id))) console.warn("此 id 沒有對應引線", id);
+    });
+  }));
+}
+validate();
+render();
+</script>
+</body>
+</html>
