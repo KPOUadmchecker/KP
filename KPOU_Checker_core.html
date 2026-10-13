@@ -34,6 +34,10 @@ h1{font-size:1.28rem;letter-spacing:.4px}
 .bar>div{background-size:120px 100%;animation:shimmer 1.4s linear infinite}
 .rh{animation:rise .4s ease}
 .svgbox{animation:rise .45s ease}
+.aedopt{display:block;max-width:100%}
+.aedmain{display:block;line-height:1.25}
+.emrow{position:relative;display:block;height:.72em;margin-top:1px}
+.em{position:absolute;left:4ch;top:0;transform:translateX(-50%);font-size:37.5%;line-height:1;white-space:nowrap;opacity:.8}
 .btn.on{border-color:var(--p);background:rgba(34,211,238,.15)}.btn.on::after{content:"✓";position:absolute;right:12px;color:var(--ok);font-weight:700}
 .rh{text-align:center;margin-bottom:10px;padding:12px;border-radius:16px;border:1px solid rgba(148,163,184,.16);background:rgba(15,23,42,.55)}.rt{font-size:1.45rem;font-weight:700;letter-spacing:.3px}
 .KPOU .rt{color:var(--ok)}.KCH .rt{color:#22d3ee}.Refer .rt{color:var(--bad)}
@@ -85,12 +89,12 @@ const UI = {nextDelay:455, boxStep:0.14, lineLag:0.07, lineDraw:0.77};
 const MAX_DEPTH = 4; /* 最深約 4 題（含起點）；進度條用此估算 */
 const QUESTIONS = [
   {q:"病人來源 Admission source？", o:[
-    {l:"AED（QEH / UCH / TKO）", n:1, id:["aed"]},
+    {l:"<span class=\"aedopt\"><span class=\"aedmain\">AED（QEH / UCH / TKO）</span><span class=\"emrow\"><span class=\"em\">（EM ward = AED）</span></span></span>", n:1, id:["aed"]},
     {l:"In-patient（QEH / UCH / TKO / KH）", n:4, id:["ip"]},
     {l:"Psy OPD（YFSPC / UCH / KH / TKOH）", r:"KPOU", why:"Psy OPD (KH / YFS / UCH / TKO) → KPOU", id:["psy"]},
     {l:"Form 12（28天內發出）", n:10, id:["f12"]},
     {l:"SLPC", n:5, id:["slpc"]},
-    {l:"AED（其他醫院）（Except QEH / UCH / TKOH）", n:6, id:["oa"]},
+    {l:"<span class=\"aedopt\"><span class=\"aedmain\">AED（其他醫院）（Except QEH/UCH/TKOH）</span><span class=\"emrow\"><span class=\"em\">（EM ward = AED）</span></span></span>", n:6, id:["oa"]},
     {l:"In-patient（其他醫院）（Except QEH / UCH / TKO / KH）", n:7, id:["ipo"]},
     {l:"已有其他 Psy OPD / Gazette 跟進", r:"Refer", why:"右上角拒收條件 → 轉介", id:["other"]}
   ]},
