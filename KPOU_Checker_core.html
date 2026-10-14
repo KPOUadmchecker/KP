@@ -106,10 +106,10 @@ const QUESTIONS = [
     {l:"Known to MHS", n:3, id:["known"]},
     {l:"New to MHS → KPOU", r:"KPOU", why:"New to MHS → KPOU", id:["newm"]}
   ]},
-  {q:"是否符合以下任何一項？", d:"1. 過去12個月有 FU OPD（YFS/KH/UCH/TKOH）\n2. KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄\n3. PSY FU default 超過1年", o:[
+  {q:"是否符合以下任何一項？", d:"1. 過去12個月有 FU OPD（YFS/KH/UCH/TKOH）\n2. KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄\n3. PSY FU default 超過1年，且28日內沒有其他精神科病房留醫的出院紀錄", o:[
     {l:"過去12個月有 FU OPD（YFS/KH/UCH/TKOH） → KPOU", r:"KPOU", why:"過去12個月有 FU OPD → KPOU", id:["kcond"]},
     {l:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", r:"KPOU", why:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", id:["kcond"]},
-    {l:"PSY FU default 超過1年 → KPOU", r:"KPOU", why:"PSY FU default 超過1年 → KPOU", id:["kcond"]},
+    {l:"PSY FU default 超過1年，且28日內沒有其他精神科病房留醫的出院紀錄 → KPOU", r:"KPOU", why:"PSY FU default 超過1年，且28日內沒有其他精神科病房留醫的出院紀錄 → KPOU", id:["kcond"]},
     {l:"三項都不符合 → 轉介", r:"Refer", why:"不符合三條件 → 轉介相關負責醫院/病房", id:["kfail","other"]}
   ]},
   {q:"是否 QEH 住院病人，而且目前由 KCH follow-up/ FU KCH、QEH Child Psy SOPD service？", o:[
@@ -131,11 +131,11 @@ const QUESTIONS = [
     {l:"HKCH 兒童醫院 in-pt case", n:9, id:["hkch"]},
     {l:"其他 in-pt case", r:"Refer", why:"其他 in-pt case → 轉介相關負責醫院/病房", id:["othip"]}
   ]},
-  {q:"有 I.D. Card － 邊個情況？", d:"KC/KE症：一年內曾在KH/ YFS / UCH / TKO PSY OPD門診就診，或KH出院28日內而且一年內沒有任何其他OPD FU紀錄\nNon KC/KE症：FU其他PSY OPD門診/Default FU超過一年，或KH出院28日後又未到任何PSY OPD就診", o:[
+  {q:"有 I.D. Card － 邊個情況？", d:"KC/KE症：一年內曾在KH/ YFS / UCH / TKO PSY OPD門診就診，或KH出院28日內而且一年內沒有任何其他OPD FU紀錄\nNon KC/KE症：FU other Psy OPD/ default FU 超過一年，或從其他Gazetted Ward出院不超過28日，且一年內沒有FU 任何 Psy OPD紀錄", o:[
     {l:"一年內曾經FU YFS/ UCH/ KH/ TKOH → KPOU", r:"KPOU", why:"一年內曾經 FU → KPOU", id:["lastfu"]},
     {l:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", r:"KPOU", why:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", id:["lastfu"]},
-    {l:"FU other OPD / default FU 超過一年 → 轉介相關醫院", r:"Refer", why:"FU other OPD / default FU 超過一年 → 轉介相關醫院", id:["fuo"]},
-    {l:"KH 出院超過28日而且未於任何PSY FU門診就診 → 轉介相關醫院", r:"Refer", why:"KH 出院超過28日未 PSY FU → 轉介相關醫院", id:["fuo"]}
+    {l:"FU other Psy OPD/ default FU 超過一年 → 轉介相關醫院", r:"Refer", why:"FU other Psy OPD/ default FU 超過一年 → 轉介相關醫院", id:["fuo"]},
+    {l:"從其他Gazetted Ward出院不超過28日，且一年內沒有FU 任何 Psy OPD紀錄 → 轉介相關醫院", r:"Refer", why:"從其他Gazetted Ward出院不超過28日，且一年內沒有FU 任何 Psy OPD紀錄 → 轉介相關醫院", id:["fuo"]}
   ]},
   {q:"病人是否 FU KCH Child Psy SOPD/ CAMS ，或QEH Child Psy SOPD？", o:[
     {l:"是 → 由 KCH 繼續護理", r:"KCH", why:"FU KCH Child Psy SOPD/CAMS 或 QEH Child Psy SOPD → 由 KCH 繼續護理", id:["cams"]},
