@@ -106,10 +106,10 @@ const QUESTIONS = [
     {l:"Known to MHS", n:3, id:["known"]},
     {l:"New to MHS → KPOU", r:"KPOU", why:"New to MHS → KPOU", id:["newm"]}
   ]},
-  {q:"是否符合以下任何一項？", d:"1. 過去12個月有 FU OPD（YFS/KH/UCH/TKOH）\n2. KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄\n3. PSY FU default 超過1年，且28日內沒有其他精神科病房留醫的出院紀錄", o:[
+  {q:"是否符合以下任何一項？", d:"1. 過去12個月有 FU OPD（YFS/KH/UCH/TKOH）\n2. KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄\n3. PSY FU default 超過1年，且28日內沒有從其他Gazetted Ward出院的紀錄", o:[
     {l:"過去12個月有 FU OPD（YFS/KH/UCH/TKOH） → KPOU", r:"KPOU", why:"過去12個月有 FU OPD → KPOU", id:["kcond"]},
     {l:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", r:"KPOU", why:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", id:["kcond"]},
-    {l:"PSY FU default 超過1年，且28日內沒有其他精神科病房留醫的出院紀錄 → KPOU", r:"KPOU", why:"PSY FU default 超過1年，且28日內沒有其他精神科病房留醫的出院紀錄 → KPOU", id:["kcond"]},
+    {l:"PSY FU default 超過1年，且28日內沒有從其他Gazetted Ward出院的紀錄 → KPOU", r:"KPOU", why:"PSY FU default 超過1年，且28日內沒有從其他Gazetted Ward出院的紀錄 → KPOU", id:["kcond"]},
     {l:"三項都不符合 → 轉介", r:"Refer", why:"不符合三條件 → 轉介相關負責醫院/病房", id:["kfail","other"]}
   ]},
   {q:"是否 QEH 住院病人，而且目前由 KCH follow-up/ FU KCH、QEH Child Psy SOPD service？", o:[
@@ -127,11 +127,11 @@ const QUESTIONS = [
   ]},
   {q:"In-patient（其他醫院）－ 邊個情況？", o:[
     {l:"PYH HBOT 高壓氧治療中心 in-pt case", r:"KPOU", why:"PYH HBOT 高壓氧治療中心 in-pt case → KPOU", id:["hbot"]},
-    {l:"KWH in-pt C&A case", n:9, id:["kwh"]},
+    {l:"KWH 廣華醫院 in-pt C&A case", n:9, id:["kwh"]},
     {l:"HKCH 兒童醫院 in-pt case", n:9, id:["hkch"]},
     {l:"以上條件均不符合", r:"Refer", why:"以上條件均不符合 → 轉介相關負責醫院/病房", id:["othip"]}
   ]},
-  {q:"有 I.D. Card － 邊個情況？", d:"KC/KE症：一年內曾在KH/ YFS / UCH / TKO PSY OPD門診就診，或KH出院28日內而且一年內沒有任何其他OPD FU紀錄\nNon KC/KE症：FU other Psy OPD/ default FU 超過一年，或從其他Gazetted Ward出院不超過28日，且一年內沒有FU 任何 Psy OPD紀錄", o:[
+  {q:"有 I.D. Card － 邊個情況？", d:"KC/KE症：一年內曾在KH/ YFS / UCH / TKO PSY OPD門診就診；或KH出院28日內而且一年內沒有任何其他OPD FU紀錄\n\nNon KC/KE症：FU other Psy OPD/ default FU 超過一年；或從其他Gazetted Ward出院不超過28日，且一年內沒有FU 任何 Psy OPD紀錄", o:[
     {l:"一年內曾經FU YFS/ UCH/ KH/ TKOH → KPOU", r:"KPOU", why:"一年內曾經 FU → KPOU", id:["lastfu"]},
     {l:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", r:"KPOU", why:"KH 出院不超過28日，而且一年內沒有任何其他OPD FU紀錄 → KPOU", id:["lastfu"]},
     {l:"FU other Psy OPD/ default FU 超過一年 → 轉介相關醫院", r:"Refer", why:"FU other Psy OPD/ default FU 超過一年 → 轉介相關醫院", id:["fuo"]},
@@ -301,7 +301,7 @@ function finish(type, why){
     <text class="tx ${cls('hbot')}" x="246" y="500" text-anchor="middle" font-size="9">PYH HBOT</text>
     <text class="tx ${cls('hbot')}" x="246" y="512" text-anchor="middle" font-size="8">高壓氧治療中心 in-pt</text>
     <rect class="n ${cls('kwh')}" data-id="kwh" x="162" y="534" width="168" height="36" rx="4"/>
-    <text class="tx ${cls('kwh')}" x="246" y="556" text-anchor="middle" font-size="9">KWH in-pt C&A case</text>
+    <text class="tx ${cls('kwh')}" x="246" y="556" text-anchor="middle" font-size="8">KWH 廣華醫院 in-pt C&A</text>
     <rect class="n ${cls('cams')||cls('camno')}" data-id="cams camno" x="340" y="528" width="150" height="48" rx="4"/>
     <text class="tx ${cls('cams')||cls('camno')}" x="415" y="546" text-anchor="middle" font-size="8">KCH Child Psy SOPD/CAMS</text>
     <text class="tx ${cls('cams')||cls('camno')}" x="415" y="560" text-anchor="middle" font-size="8">或 QEH Child Psy SOPD</text>
