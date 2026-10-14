@@ -127,7 +127,7 @@ const QUESTIONS = [
   ]},
   {q:"In-patient（其他醫院）－ 邊個情況？", o:[
     {l:"PYH HBOT 高壓氧治療中心 in-pt case", r:"KPOU", why:"PYH HBOT 高壓氧治療中心 in-pt case → KPOU", id:["hbot"]},
-    {l:"KWH 廣華醫院 in-pt C&A case", n:9, id:["kwh"]},
+    {l:"KWH 廣華醫院 in-pt (C&A) case", n:9, id:["kwh"]},
     {l:"HKCH 兒童醫院 in-pt case", n:9, id:["hkch"]},
     {l:"以上條件均不符合", r:"Refer", why:"以上條件均不符合 → 轉介相關負責醫院/病房", id:["othip"]}
   ]},
@@ -301,7 +301,7 @@ function finish(type, why){
     <text class="tx ${cls('hbot')}" x="246" y="500" text-anchor="middle" font-size="9">PYH HBOT</text>
     <text class="tx ${cls('hbot')}" x="246" y="512" text-anchor="middle" font-size="8">高壓氧治療中心 in-pt</text>
     <rect class="n ${cls('kwh')}" data-id="kwh" x="162" y="534" width="168" height="36" rx="4"/>
-    <text class="tx ${cls('kwh')}" x="246" y="556" text-anchor="middle" font-size="8">KWH 廣華醫院 in-pt C&A</text>
+    <text class="tx ${cls('kwh')}" x="246" y="556" text-anchor="middle" font-size="8">KWH 廣華醫院 in-pt (C&A)</text>
     <rect class="n ${cls('cams')||cls('camno')}" data-id="cams camno" x="340" y="528" width="150" height="48" rx="4"/>
     <text class="tx ${cls('cams')||cls('camno')}" x="415" y="546" text-anchor="middle" font-size="8">KCH Child Psy SOPD/CAMS</text>
     <text class="tx ${cls('cams')||cls('camno')}" x="415" y="560" text-anchor="middle" font-size="8">或 QEH Child Psy SOPD</text>
